@@ -95,6 +95,7 @@ tasks.shadowJar {
   enableAutoRelocation = false
   relocate('org.objectweb.asm', 'org.sonatype.gradle.plugins.scan.shadow.org.objectweb.asm')
   relocate('org.apache.commons', 'org.sonatype.gradle.plugins.scan.shadow.org.apache.commons')
+  exclude 'groovyjarjarasm/**'
   mergeServiceFiles()
 }
 
