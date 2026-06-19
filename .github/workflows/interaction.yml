@@ -1,0 +1,69 @@
+name: Interaction
+
+on:
+  issues:
+    types:
+      - opened
+
+  pull_request_target:
+    types:
+      - opened
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Comment on Issue
+        if: github.event_name == 'issues'
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const issueMessage = `Hi!
+
+            Thank you for opening this issue. We appreciate all feedback that helps us continue improving this plugin.
+
+            For Sonatype customers: in addition to opening this issue, you can also request support at https://support.sonatype.com
+
+            We will review your issue and get back to you as soon as we can!
+
+            Regards,
+
+            Sherlock Trunks 🐘`;
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: issueMessage
+            });
+
+      - name: Comment on Pull Request
+        if: github.event_name == 'pull_request_target'
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const prMessage = `Hi!
+
+            Thank you for opening this pull-request. We appreciate all submissions that helps us continue improving this plugin.
+
+            Please take a look at our [contributing guidelines](https://github.com/sonatype-nexus-community/scan-gradle-plugin/blob/main/.github/CONTRIBUTING.md) and make sure all requirements are fulfilled.
+
+            For Sonatype customers: in addition to opening this pull-request, you can also request support at https://support.sonatype.com
+
+            We will review your pull-request and get back to you as soon as we can!
+
+            Regards,
+
+            Sherlock Trunks 🐘`;
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: prMessage
+            });
