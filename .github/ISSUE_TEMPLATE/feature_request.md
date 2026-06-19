@@ -14,5 +14,3 @@ assignees: ''
 * **How could we solve this issue? (Not knowing is okay!)**
 
 * **Anything else?**
-
-cc @bhamail / @DarthHater / @guillermo-varela / @shaikhu

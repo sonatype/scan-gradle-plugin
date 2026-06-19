@@ -27,7 +27,7 @@
 
 ![GitHub Actions CI](https://github.com/sonatype-nexus-community/scan-gradle-plugin/actions/workflows/ci.yaml/badge.svg)
 
-Gradle plugin that scans the dependencies of a Gradle project using Sonatype platforms: OSS Index and Nexus IQ Server.
+Gradle plugin that scans the dependencies of a Gradle project using Sonatype platforms: Guide (through OSS Index compatibility) and Nexus IQ Server.
 
 ## Compile and Publish to Local Maven Cache
 
@@ -88,16 +88,20 @@ Also, when running the tasks please set the log level to `INFO` to see results u
 ./gradlew nexusIQScan --info
 ```
 
-### OSS Index
-OSS Index can be used without any extra configuration, but to avoid reaching the limit for anonymous queries every user
-is encouraged to create a free account on [OSS Index](https://ossindex.sonatype.org/user/signin) and use the credentials
-on this plugin. Cache can also be configured optionally.
+### Sonatype Guide (through OSS Index compatibility)
+Originally, this plugin was integrated with OSS Index but OSS Index has been migrated to Sonatype Guide, meaning that
+this plugin now gets to use the Sonatype Guide APIs to provide data about open source components with OSS Index compatibility.
+
+More details about the OSS Index Migration to Sonatype Guide can be found at https://help.sonatype.com/en/oss-index-migration-to-sonatype-guide.html
+
+While there is a free tier for Sonatype Guide, it does require authentication (no anonymous requests can be made).
+See authentication documentation for Sonatype Guide with OSS Index compatibility at https://help.sonatype.com/en/using-guide-personal-access-tokens-with-oss-index-api-integrations.html
 
 If you are using Groovy (build.gradle file):
 ```groovy
 ossIndexAudit {
-    username = 'email' // if not provided, an anonymous query will be made
-    password = 'pass'
+    username = 'email' // required, anonymous queries are not supported
+    password = 'token' // required, anonymous queries are not supported
     allConfigurations = false // if true includes the dependencies in all resolvable configurations. By default is false, meaning only 'compileClasspath', 'runtimeClasspath', 'releaseCompileClasspath' and 'releaseRuntimeClasspath' are considered
     useCache = true // true by default
     cacheDirectory = 'some/path' // by default it uses the user data directory (according to OS)
@@ -137,8 +141,8 @@ ossIndexAudit {
 Or if you are using Kotlin (build.gradle.kts file):
 ```kotlin
 ossIndexAudit {
-    username = "email" // if not provided, an anonymous query will be made
-    password = "pass"
+    username = 'email' // required, anonymous queries are not supported
+    password = 'token' // required, anonymous queries are not supported
     isAllConfigurations =
         false // if true includes the dependencies in all resolvable configurations. By default is false, meaning only "compileClasspath", "runtimeClasspath", "releaseCompileClasspath" and "releaseRuntimeClasspath" are considered
     isUseCache = true // true by default
@@ -416,7 +420,7 @@ See more information about attributes matching for variant selection see https:/
 
 We care a lot about making the world a safer place, and that's why we created this `scan-gradle-plugin`. If you as well want to speed up the pace of software development by working on this project, jump on in! Before you start work, create a new issue, or comment on an existing issue, to let others know you are!
 
-Check the full contrubuting guidelines at: [CONTRIBUTING.md](./.github/CONTRIBUTING.md)
+Check the full contributing guidelines at: [CONTRIBUTING.md](./.github/CONTRIBUTING.md)
 
 ## The Fine Print
 
