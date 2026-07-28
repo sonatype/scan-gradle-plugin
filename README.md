@@ -44,9 +44,14 @@ If you want to save some time, skip integration tests:
 ## Compatibility
 The plugin from release 4.0.0 onwards, can be used with Java 17 installed locally on projects with Gradle versions:
 - 7.6.4
-- 8.3 or higher
+- 8.4 or higher
 
 Gradle 5.x and 6.x are no longer supported, since Java 17 requires Gradle 7.3 or higher.
+
+Gradle 8.3 is no longer supported: it fails while instrumenting the plugin classpath, because its bundled ASM cannot
+read the Java 25 (class file major version 69) entries under `META-INF/versions/25` in `bcprov-jdk18on`, a transitive
+dependency of the Nexus Platform API. Gradle 8.4 and higher skip the entries they cannot read instead of failing.
+`bcprov-jdk18on` cannot be downgraded to avoid this, as earlier versions carry known vulnerabilities.
 
 It has ranges of supported versions due to a known bug in Gradle for plugins with multi-jar dependencies. See more at:
 - https://github.com/gradle/gradle/issues/27156
