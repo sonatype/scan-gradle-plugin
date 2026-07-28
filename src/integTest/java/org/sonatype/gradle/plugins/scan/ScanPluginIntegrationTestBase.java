@@ -29,7 +29,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
-import org.gradle.util.GradleVersion;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -80,9 +79,7 @@ public abstract class ScanPluginIntegrationTestBase
   public void testScanTask_MissingTaskConfiguration_NexusIQ() throws IOException {
     writeFile(buildFile, "missing-scan.gradle");
 
-    String errorMessage = GradleVersion.version(gradleVersion).compareTo(GradleVersion.version("7.0")) < 0
-        ? "No value has been specified for property '%s"
-        : "property '%s' doesn't have a configured value.";
+    String errorMessage = "property '%s' doesn't have a configured value.";
 
     assertThatThrownBy(() -> GradleRunner.create()
         .withGradleVersion(gradleVersion)

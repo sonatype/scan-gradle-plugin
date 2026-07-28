@@ -31,7 +31,7 @@ jobs:
       # might be helpful to limit threads in local builds
       #max-parallel: 2
       matrix:
-        it: [it1, it2, it3, it4, it5, it6, it7]
+        it: [it1, it2, it3, it4]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

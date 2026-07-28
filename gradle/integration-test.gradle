@@ -12,10 +12,9 @@ task integrationTest(type: Test) {
   group = 'verification'
 }
 
-['**/ScanIT_Gradle_Versions_5_0*.class',
- '**/ScanIT_Gradle_Versions_5_5*.class',
- '**/ScanIT_Gradle_Versions_6_0*.class',
- '**/ScanIT_Gradle_Versions_7_6*.class',
+// Gradle 5.x and 6.x are not tested: they bundle Groovy 2.x, which cannot run on Java 16+, and they cannot load
+// this plugin's Java 17 bytecode. Java 17 requires Gradle 7.3 or higher.
+['**/ScanIT_Gradle_Versions_7_6*.class',
  '**/ScanIT_Gradle_Versions_8_3*.class',
  '**/ScanIT_Gradle_Versions_8_6*.class',
  '**/ScanIT_Gradle_Versions_8_11*.class'].eachWithIndex { className, index ->
