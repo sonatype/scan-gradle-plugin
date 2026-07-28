@@ -70,4 +70,4 @@ jobs:
           username: ${{ secrets.SONATYPE_LIFECYCLE_USERNAME }}
           password: ${{ secrets.SONATYPE_LIFECYCLE_PASSWORD }}
           application-id: 'scan-gradle-plugin'
-          scan-targets: './build.gradle'
+          scan-targets: './build/libs/scan-gradle-plugin-*-SNAPSHOT.jar'
