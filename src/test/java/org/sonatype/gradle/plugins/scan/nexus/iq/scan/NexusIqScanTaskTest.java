@@ -97,7 +97,8 @@ public class NexusIqScanTaskTest
 
     when(iqClientMock.evaluateApplication(anyString(), anyString(), nullable(ScanResult.class), any(File.class),
         nullable(File.class))).thenReturn(
-        new ApplicationPolicyEvaluation(0, 0, 0, 0, 0, 0, 0, 0, 0, Collections.emptyList(), "simulated/report"));
+        new ApplicationPolicyEvaluation(0, 0, 0, 0, 0, 0, 0, 0, 0, Collections.emptyList(), "simulated/report",
+            "simulated/priorities"));
     when(builderMock.build()).thenReturn(iqClientMock);
 
     when(dependenciesFinderMock.findModules(any(Project.class), eq(false), anySet(), anyMap(), eq(false)))

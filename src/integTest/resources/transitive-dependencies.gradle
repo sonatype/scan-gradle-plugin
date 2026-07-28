@@ -10,6 +10,7 @@ dependencies {
   implementation 'org.hamcrest:hamcrest-core:2.2'
 }
 ossIndexAudit {
+  simulationEnabled = true
   colorEnabled = false
   outputFormat = 'DEPENDENCY_GRAPH'
   showAll = true

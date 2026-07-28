@@ -17,17 +17,18 @@ package org.sonatype.gradle.plugins.scan;
 
 import org.junit.runners.Parameterized;
 
+import java.util.Arrays;
 import java.util.List;
 
-public class ScanIT_Gradle_Versions_5_5_to_5_6
+public class ScanIT_Gradle_Versions_8_4_to_8_5
     extends ScanPluginIntegrationTestBase
 {
   @Parameterized.Parameters(name = "Version: {0}")
   public static List<String> data() {
-    return List.of("5.5", "5.6", "5.6.4");
+    return List.of("8.4", "8.5");
   }
 
-  public ScanIT_Gradle_Versions_5_5_to_5_6(final String gradleVersion) {
+  public ScanIT_Gradle_Versions_8_4_to_8_5(final String gradleVersion) {
     super(gradleVersion);
   }
 }

@@ -42,14 +42,22 @@ If you want to save some time, skip integration tests:
 > ./gradlew integrationTest
 
 ## Compatibility
-The plugin from release 3.0.0 onwards, can be used with Java 11 installed locally on projects with Gradle versions:
-- 5.0 until 6.4.1
+The plugin from release 4.0.0 onwards, can be used with Java 17 installed locally on projects with Gradle versions:
 - 7.6.4
-- 8.3 or higher
+- 8.4 or higher
+
+Gradle 5.x and 6.x are no longer supported, since Java 17 requires Gradle 7.3 or higher.
+
+Gradle 8.3 is no longer supported: it fails while instrumenting the plugin classpath, because its bundled ASM cannot
+read the Java 25 (class file major version 69) entries under `META-INF/versions/25` in `bcprov-jdk18on`, a transitive
+dependency of the Nexus Platform API. Gradle 8.4 and higher skip the entries they cannot read instead of failing.
+`bcprov-jdk18on` cannot be downgraded to avoid this, as earlier versions carry known vulnerabilities.
 
 It has ranges of supported versions due to a known bug in Gradle for plugins with multi-jar dependencies. See more at:
 - https://github.com/gradle/gradle/issues/27156
 - https://discuss.gradle.org/t/is-there-any-way-to-skip-gradle-instrumenting-classpath-file-transformer/45213/3
+
+Releases 3.0.0 until 3.1.x can be used with Java 11 installed locally on projects with Gradle 5.0 until 6.4.1, 7.6.4, or 8.3 or higher.
 
 All plugin releases prior to 3.0.0, can be used on projects with Gradle 3.3 or higher (local installation or wrapper) and Java 8 installed locally.
 

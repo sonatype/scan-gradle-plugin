@@ -14,32 +14,50 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  build-test-evaluate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           submodules: recursive
           fetch-depth: 0
-      - uses: ./.github/actions/setup
-      - name: Build with Gradle
-        run: ./gradlew test --no-daemon --debug --max-workers 2
 
-  it-test:
+      - uses: ./.github/actions/setup
+
+      - name: Build with Gradle
+        run: ./gradlew build copyDependencies -x integrationTest --no-daemon --info --max-workers 2
+        env:
+          NEXUS_RM_USERNAME: ${{ secrets.NEXUS_RM_USERNAME }}
+          NEXUS_RM_PASSWORD: ${{ secrets.NEXUS_RM_PASSWORD }}
+
+      - name: Sonatype Lifecycle Evaluation
+        id: evaluate
+        if: always()
+        uses: sonatype/actions/evaluate@v1
+        with:
+          iq-server-url: ${{ vars.SONATYPE_PLATFORM_URL }}
+          username: ${{ secrets.SONATYPE_LIFECYCLE_USERNAME }}
+          password: ${{ secrets.SONATYPE_LIFECYCLE_PASSWORD }}
+          application-id: 'scan-gradle-plugin'
+          scan-targets: './build/dependencies/*.jar'
+
+  it-tests:
     strategy:
       # might be helpful to limit threads in local builds
       #max-parallel: 2
       matrix:
-        it: [it1, it2, it3, it4, it5, it6, it7]
+        it: [it1, it2, it3, it4]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           submodules: recursive
           fetch-depth: 0
+
       - uses: ./.github/actions/setup
+
        # might need to setup NDK for local builds
 #      - uses: nttld/setup-ndk@v1
 #        with:
@@ -47,24 +65,6 @@ jobs:
 #          link-to-sdk: true
       - name: Build with Gradle
         run: ./gradlew test --no-daemon --info ${{ matrix.it }}
-
-  code_quality:
-    name: Code Quality
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          # Disabling shallow clone is recommended for improving relevancy of reporting
-          fetch-depth: 0
-
-      - name: Sonatype Lifecycle Evaluation
-        id: evaluate
-        uses: sonatype/actions/evaluate@v1
-        with:
-          iq-server-url: ${{ vars.SONATYPE_PLATFORM_URL }}
-          username: ${{ secrets.SONATYPE_LIFECYCLE_USERNAME }}
-          password: ${{ secrets.SONATYPE_LIFECYCLE_PASSWORD }}
-          application-id: 'scan-gradle-plugin'
-          scan-targets: './build.gradle'
+        env:
+          NEXUS_RM_USERNAME: ${{ secrets.NEXUS_RM_USERNAME }}
+          NEXUS_RM_PASSWORD: ${{ secrets.NEXUS_RM_PASSWORD }}

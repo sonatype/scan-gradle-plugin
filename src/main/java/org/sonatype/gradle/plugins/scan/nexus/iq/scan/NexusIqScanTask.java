@@ -91,7 +91,8 @@ public class NexusIqScanTask
             extension.getVariantAttributes(), extension.isExcludeCompileOnly());
 
         applicationPolicyEvaluation =
-            new ApplicationPolicyEvaluation(0, 0, 0, 0, 0, 0, 0, 0, 1, alerts, "simulated/report");
+            new ApplicationPolicyEvaluation(0, 0, 0, 0, 0, 0, 0, 0, 1, alerts, "simulated/report",
+                "simulated/priorities");
       }
       else {
         InternalIqClient iqClient = InternalIqClientBuilder.create()
