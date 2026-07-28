@@ -14,6 +14,7 @@ Sonatype internal people:
 External contributors:
 
 - [@JoarSvartholm](https://github.com/JoarSvartholm) (Joar Svartholm)
+- [@davidjlynn](https://github.com/davidjlynn) (David Lynn)
 - 
 
 Possibly You!
