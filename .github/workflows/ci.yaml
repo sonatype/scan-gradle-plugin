@@ -26,7 +26,7 @@ jobs:
       - uses: ./.github/actions/setup
 
       - name: Build with Gradle
-        run: ./gradlew build -x integrationTest --no-daemon --info --max-workers 2
+        run: ./gradlew build copyDependencies -x integrationTest --no-daemon --info --max-workers 2
         env:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
@@ -40,7 +40,7 @@ jobs:
           username: ${{ secrets.SONATYPE_LIFECYCLE_USERNAME }}
           password: ${{ secrets.SONATYPE_LIFECYCLE_PASSWORD }}
           application-id: 'scan-gradle-plugin'
-          scan-targets: './build/libs/scan-gradle-plugin-*-SNAPSHOT.jar'
+          scan-targets: './build/dependencies/*.jar'
 
   it-tests:
     strategy:

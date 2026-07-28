@@ -98,6 +98,14 @@ test {
   maxHeapSize = '512m'
 }
 
+// Copies the original dependency jars, before shadowJar relocates any of their packages.
+tasks.register('copyDependencies', Copy) {
+  description = 'Copies the runtime dependency jars into build/dependencies.'
+  group = 'build'
+  from configurations.runtimeClasspath
+  into layout.buildDirectory.dir('dependencies')
+}
+
 tasks.shadowJar {
   archiveClassifier = ''
   enableAutoRelocation = false
