@@ -28,8 +28,8 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build copyDependencies -x integrationTest --no-daemon --info --max-workers 2
         env:
-          NEXUS_USER: ${{ secrets.NEXUS_USER }}
-          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          NEXUS_RM_USERNAME: ${{ secrets.NEXUS_RM_USERNAME }}
+          NEXUS_RM_PASSWORD: ${{ secrets.NEXUS_RM_PASSWORD }}
 
       - name: Sonatype Lifecycle Evaluation
         id: evaluate
@@ -66,5 +66,5 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew test --no-daemon --info ${{ matrix.it }}
         env:
-          NEXUS_USER: ${{ secrets.NEXUS_USER }}
-          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          NEXUS_RM_USERNAME: ${{ secrets.NEXUS_RM_USERNAME }}
+          NEXUS_RM_PASSWORD: ${{ secrets.NEXUS_RM_PASSWORD }}
