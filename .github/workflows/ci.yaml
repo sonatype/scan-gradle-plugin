@@ -47,6 +47,9 @@ jobs:
 #          link-to-sdk: true
       - name: Build with Gradle
         run: ./gradlew test --no-daemon --info ${{ matrix.it }}
+        env:
+          NEXUS_USER: ${{ secrets.NEXUS_USER }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   code_quality:
     name: Code Quality

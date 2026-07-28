@@ -53,6 +53,14 @@ jar {
 
 allprojects {
   repositories {
+    maven {
+      name = 'srsa'
+      url = 'https://sonatype.repo.sonatype.app/repository/maven-private'
+      credentials {
+        username = System.getenv("NEXUS_USER")
+        password = System.getenv("NEXUS_PASSWORD")
+      }
+    }
     mavenCentral()
   }
 }
