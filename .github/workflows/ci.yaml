@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-test-evaluate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,7 +26,7 @@ jobs:
       - uses: ./.github/actions/setup
 
       - name: Build with Gradle
-        run: ./gradlew build test --no-daemon --info --max-workers 2
+        run: ./gradlew build -x integrationTest --no-daemon --info --max-workers 2
         env:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
@@ -42,7 +42,7 @@ jobs:
           application-id: 'scan-gradle-plugin'
           scan-targets: './build/libs/scan-gradle-plugin-*-SNAPSHOT.jar'
 
-  it-test:
+  it-tests:
     strategy:
       # might be helpful to limit threads in local builds
       #max-parallel: 2
