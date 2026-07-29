@@ -242,7 +242,7 @@ public class CycloneDxResponseHandler
       log.info("CycloneDX SBOM file: {}", FILE_NAME_OUTPUT);
     }
     catch (Exception e) {
-      throw new UncheckedIOException("Error generating the CycloneDX SBOM file", e);
+      throw new RuntimeException("Error generating the CycloneDX SBOM file", e);
     }
   }
 }

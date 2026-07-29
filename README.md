@@ -74,14 +74,14 @@ Gradle can be used to build projects developed in various programming languages.
 
 ```
 plugins {
-  id 'org.sonatype.gradle.plugins.scan' version '3.1.3' // Update the version as needed
+  id 'org.sonatype.gradle.plugins.scan' version '4.0.0' // Update the version as needed
 }
 ```
 
 - Or `build.gradle.kts`:
 ```
 plugins {
-    id ("org.sonatype.gradle.plugins.scan") version "3.1.3" // Update the version as needed
+    id ("org.sonatype.gradle.plugins.scan") version "4.0.0" // Update the version as needed
 }
 ```
 
