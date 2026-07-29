@@ -12,11 +12,13 @@ task integrationTest(type: Test) {
   group = 'verification'
 }
 
-['**/ScanIT_Gradle_Versions_5_0*.class',
- '**/ScanIT_Gradle_Versions_5_5*.class',
- '**/ScanIT_Gradle_Versions_6_0*.class',
- '**/ScanIT_Gradle_Versions_7_6*.class',
- '**/ScanIT_Gradle_Versions_8_3*.class',
+// Gradle 5.x and 6.x are not tested: they bundle Groovy 2.x, which cannot run on Java 16+, and they cannot load
+// this plugin's Java 17 bytecode. Java 17 requires Gradle 7.3 or higher.
+// Gradle 8.3 is not tested: its bundled ASM cannot read the Java 25 (class file major version 69) entries under
+// META-INF/versions/25 in bcprov-jdk18on, so instrumenting the plugin classpath fails. Gradle 8.4 and higher skip
+// the entries they cannot read instead of failing. See the Compatibility section in README.md.
+['**/ScanIT_Gradle_Versions_7_6*.class',
+ '**/ScanIT_Gradle_Versions_8_4*.class',
  '**/ScanIT_Gradle_Versions_8_6*.class',
  '**/ScanIT_Gradle_Versions_8_11*.class'].eachWithIndex { className, index ->
   task "it${index + 1}"(type: Test) {
