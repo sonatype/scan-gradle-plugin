@@ -1,14 +1,5 @@
-(brief, plain english overview of your changes here)
+## Description
 
-This pull request makes the following changes:
-* (your change here)
-* (another change here)
-* (etc)
-
-(If there are changes to user behavior in general, please make sure to
-update the docs, as well)
-
-It relates to the following issue #s:
-* Fixes #X
-
-cc @bhamail / @DarthHater / @guillermo-varela / @shaikhu
+## Links
+JIRA:
+Build: 

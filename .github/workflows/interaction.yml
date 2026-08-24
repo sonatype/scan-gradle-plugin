@@ -51,7 +51,7 @@ jobs:
 
             Thank you for opening this pull-request. We appreciate all submissions that helps us continue improving this plugin.
 
-            Please take a look at our [contributing guidelines](https://github.com/sonatype-nexus-community/scan-gradle-plugin/blob/main/.github/CONTRIBUTING.md) and make sure all requirements are fulfilled.
+            Please take a look at our [contributing guidelines](https://github.com/sonatype/scan-gradle-plugin/blob/main/.github/CONTRIBUTING.md) and make sure all requirements are fulfilled.
 
             For Sonatype customers: in addition to opening this pull-request, you can also request support at https://support.sonatype.com
 

@@ -1,3 +1,5 @@
-@sonatype-nexus-community/community-leaders
-@guillermo-varela
-@shaikhu
+# Each line is a file pattern followed by one or more owners. More info about CODEOWNERS visit:
+# https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
+
+# @sonatype/team-atlas will be automatically requested for review when someone opens a pull request.
+* @sonatype/team-atlas
