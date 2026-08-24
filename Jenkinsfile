@@ -36,14 +36,9 @@ pipeline {
         licenseCheck()
       }
     }
-    stage('Build') {
+    stage('Build and Test') {
       steps {
-        gradleExec("build copyDependencies -x integrationTest")
-      }
-    }
-    stage('Test') {
-      steps {
-        gradleExec("integrationTest")
+        gradleExec("build copyDependencies integrationTest")
         collectTestResults(['**/test-results/*.xml'])
       }
     }
