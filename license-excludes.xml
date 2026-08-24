@@ -1,4 +1,5 @@
 <excludes>
   <exclude>src/.github/**</exclude>
   <exclude>src/releasenotes/assets/css/style.scss</exclude>
+  <exclude>src/*.md</exclude>
 </excludes>

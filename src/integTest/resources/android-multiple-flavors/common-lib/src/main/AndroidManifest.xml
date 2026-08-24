@@ -1,3 +1,11 @@
+<!--
+
+    Copyright (c) 2016-present Sonatype, Inc. All rights reserved.
+
+    Includes the third-party code listed at https://links.sonatype.com/products/clm/attributions.
+    "Sonatype" is a trademark of Sonatype, Inc.
+
+-->
 <manifest package="com.inventage.sonatype.android.app"
           xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools">
