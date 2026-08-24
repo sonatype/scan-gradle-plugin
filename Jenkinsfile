@@ -88,7 +88,7 @@ pipeline {
   }
 }
 
-String BUILD_IMAGE_ID() { return "${sonatypeDockerRegistryId()}/integrations/idea-build-pipeline" }
+String BUILD_IMAGE_ID() { return "${sonatypeDockerRegistryId()}/integrations/gradle-build-pipeline" }
 
 def gradleExec(String cmd) {
   dockerPrepareBuildImage(BUILD_IMAGE_ID(), true)
