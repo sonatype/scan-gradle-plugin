@@ -23,14 +23,6 @@ Closure policyEvaluation = { stage ->
 pipeline {
   agent { label pipelineCommon.agentLabel }
   options {
-    buildDiscarder(
-        logRotator(
-            numToKeepStr: pipelineCommon.NUM_TO_KEEP_STR,
-            daysToKeepStr: pipelineCommon.DAYS_TO_KEEP_STR,
-            artifactNumToKeepStr: pipelineCommon.ARTIFACT_NUM_TO_KEEP_STR,
-            artifactDaysToKeepStr: pipelineCommon.ARTIFACT_DAYS_TO_KEEP_STR
-        )
-    )
     timestamps()
   }
   stages {
