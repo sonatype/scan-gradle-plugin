@@ -9,7 +9,7 @@ apply from: 'gradle/integration-test.gradle'
 
 // Plugin publishing configuration
 def pluginDescription = 'Scan, evaluate and audit Gradle projects using Sonatype platforms'
-def pluginUrl = 'https://github.com/sonatype-nexus-community/scan-gradle-plugin'
+def pluginUrl = 'https://github.com/sonatype/scan-gradle-plugin'
 
 gradlePlugin {
   plugins {
@@ -125,26 +125,26 @@ publishing {
       pom {
         name = project.name
         description = pluginDescription
-        url = 'https://github.com/sonatype-nexus-community/scan-gradle-plugin'
+        url = 'https://github.com/sonatype/scan-gradle-plugin'
         organization {
           name = 'Sonatype'
           url = 'https://www.sonatype.com'
         }
         issueManagement {
           system = 'GitHub'
-          url = 'https://github.com/sonatype-nexus-community/scan-gradle-plugin/issues'
+          url = 'https://github.com/sonatype/scan-gradle-plugin/issues'
         }
         licenses {
           license {
-            name = 'The Apache Software License, Version 2.0'
-            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            name = 'Sonatype-Integration-Terms-EULA'
+            url = 'https://www.sonatype.com/dnt/usage/integration-api-eula'
             distribution = 'repo'
           }
         }
         scm {
-          connection = 'scm:git:git://github.com/sonatype-nexus-community/scan-gradle-plugin.git'
-          developerConnection = 'scm:git:ssh://git@github.com:sonatype-nexus-community/scan-gradle-plugin.git'
-          url = 'https://github.com/sonatype-nexus-community/scan-gradle-plugin'
+          connection = 'scm:git:git://github.com/sonatype/scan-gradle-plugin.git'
+          developerConnection = 'scm:git:ssh://git@github.com:sonatype/scan-gradle-plugin.git'
+          url = 'https://github.com/sonatype/scan-gradle-plugin'
         }
         developers {
           developer {

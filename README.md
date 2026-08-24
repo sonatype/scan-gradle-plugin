@@ -17,7 +17,7 @@
 -->
 
 <p align="center">
-    <img src="https://github.com/sonatype-nexus-community/scan-gradle-plugin/blob/main/docs/images/sherlocktrunks.png" width="350"/>
+    <img src="https://github.com/sonatype/scan-gradle-plugin/blob/main/docs/images/sherlocktrunks.png" width="350"/>
 </p>
 
 # Sonatype Scan Gradle Plugin - AKA Sherlock Trunks #
@@ -25,7 +25,7 @@
 
 [![Gradle Plugins Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/sonatype/gradle/plugins/scan/org.sonatype.gradle.plugins.scan.gradle.plugin/maven-metadata.xml.svg?colorB=007ec6&label=Gradle%20Plugins%20Portal)](https://plugins.gradle.org/plugin/org.sonatype.gradle.plugins.scan)
 
-![GitHub Actions CI](https://github.com/sonatype-nexus-community/scan-gradle-plugin/actions/workflows/ci.yaml/badge.svg)
+![GitHub Actions CI](https://github.com/sonatype/scan-gradle-plugin/actions/workflows/ci.yaml/badge.svg)
 
 Gradle plugin that scans the dependencies of a Gradle project using Sonatype platforms: Guide (through OSS Index compatibility) and Nexus IQ Server.
 
