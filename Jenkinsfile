@@ -39,7 +39,6 @@ pipeline {
           // default version, so Jenkinsfile changes and vars/*.groovy changes stay in sync.
           library "scan-gradle-plugin@${env.BRANCH_NAME}"
         }
-        setBuildDisplayName Branch: env.BRANCH_NAME
         githubStatusUpdate('pending')
       }
     }

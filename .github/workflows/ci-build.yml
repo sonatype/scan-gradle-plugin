@@ -29,7 +29,7 @@ jobs:
           java-version: 17
 
       - name: License check, Build and Unit Test
-        run: ./gradlew build copyDependencies -x integrationTest -x javadoc --no-daemon --info --max-workers 2
+        run: ./gradlew build copyDependencies -x integrationTest -x javadoc --no-daemon --stacktrace --max-workers 2
         env:
           NEXUS_RM_USERNAME: ${{ secrets.NEXUS_RM_USERNAME }}
           NEXUS_RM_PASSWORD: ${{ secrets.NEXUS_RM_PASSWORD }}
@@ -66,7 +66,7 @@ jobs:
           java-version: 17
 
       - name: Build and run ITs
-        run: ./gradlew test --no-daemon --info -x license -x javadoc ${{ matrix.it }}
+        run: ./gradlew test --no-daemon --stacktrace -x license -x javadoc ${{ matrix.it }}
         env:
           NEXUS_RM_USERNAME: ${{ secrets.NEXUS_RM_USERNAME }}
           NEXUS_RM_PASSWORD: ${{ secrets.NEXUS_RM_PASSWORD }}
