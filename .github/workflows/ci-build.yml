@@ -67,4 +67,4 @@ jobs:
           name: ${{ matrix.it }}
           compression-level: 1 # best speed
           path: |
-            build/test-results/*/*.xml
+            build/test-results/it*/*.xml
