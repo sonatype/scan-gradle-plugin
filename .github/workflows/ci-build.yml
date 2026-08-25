@@ -22,7 +22,11 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      - uses: ./.github/actions/setup
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: 17
 
       - name: License check, Build and Unit Test
         run: ./gradlew build copyDependencies -x integrationTest -x javadoc --no-daemon --info --max-workers 2
@@ -55,7 +59,11 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      - uses: ./.github/actions/setup
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: 17
 
       - name: Build and run ITs
         run: ./gradlew test --no-daemon --info -x license -x javadoc ${{ matrix.it }}
