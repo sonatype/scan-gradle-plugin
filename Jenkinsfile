@@ -10,6 +10,16 @@ Map<String, ?> pipelineCommon = pipelineCommon retentionPolicy: RetentionPolicy.
 
 String deployBranch = 'main'
 
+properties([
+    parameters([
+        booleanParam(
+            name: 'runIntegrationTests',
+            defaultValue: true,
+            description: 'If checked it includes all integration tests; otherwise only unit tests will run.'
+        )
+    ])
+])
+
 Closure policyEvaluation = { stage ->
   nexusPolicyEvaluation(
     unstableBuildOnScanningWarnings: false,
@@ -48,8 +58,8 @@ pipeline {
     }
     stage('Build and Test') {
       steps {
-        gradleExec("build copyDependencies integrationTest")
-        collectTestResults(['**/test-results/*.xml'])
+        gradleExec(params.runIntegrationTests ? 'build copyDependencies integrationTest' : 'build copyDependencies')
+        collectTestResults(['**/test-results/*/*.xml'])
       }
     }
     stage('Collect Distribution Files') {
