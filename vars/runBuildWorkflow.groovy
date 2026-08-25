@@ -13,6 +13,6 @@ def call(String branch, boolean runIntegrationTests) {
 
   gitHubPollWorkflowCompletion(gitHub, workflowRun, 450, 30)
 
-  // successful release workflowRun run will have 1 artifact
-  gitHubArtifactDownload(gitHub, workflowRun, 1)
+  // successful release workflowRun run will have 1 or 5 artifacts
+  gitHubArtifactDownload(gitHub, workflowRun, runIntegrationTests ? 1 : 5)
 }

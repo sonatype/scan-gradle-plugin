@@ -78,7 +78,7 @@ pipeline {
     stage('Collect Distribution Files') {
       steps {
         collectDist([includes: [
-            'target/build/libs/*.jar'
+            'target/libs/*.jar'
         ]])
       }
     }

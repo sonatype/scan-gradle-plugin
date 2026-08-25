@@ -30,11 +30,11 @@ jobs:
           NEXUS_RM_USERNAME: ${{ secrets.NEXUS_RM_USERNAME }}
           NEXUS_RM_PASSWORD: ${{ secrets.NEXUS_RM_PASSWORD }}
 
-      - name: Upload artifacts
+      - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
           name: scan-gradle-plugin
-          compression-level: 0 # no compression
+          compression-level: 1 # best speed
           path: |
             build/libs/scan-gradle-plugin-*-SNAPSHOT.jar
             build/libs/scan-gradle-plugin-*-SNAPSHOT-sources.jar
@@ -60,3 +60,11 @@ jobs:
         env:
           NEXUS_RM_USERNAME: ${{ secrets.NEXUS_RM_USERNAME }}
           NEXUS_RM_PASSWORD: ${{ secrets.NEXUS_RM_PASSWORD }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.it }}
+          compression-level: 1 # best speed
+          path: |
+            build/test-results/*/*.xml
