@@ -4,7 +4,7 @@
  * Includes the third-party code listed at https://links.sonatype.com/products/clm/attributions.
  * "Sonatype" is a trademark of Sonatype, Inc.
  */
-@Library(['scan-gradle-plugin', 'private-pipeline-library', 'jenkins-shared', 'int-jenkins-shared']) _
+@Library(['scan-gradle-plugin@${env.BRANCH_NAME}', 'private-pipeline-library', 'jenkins-shared', 'int-jenkins-shared']) _
 
 Map<String, ?> pipelineCommon = pipelineCommon retentionPolicy: RetentionPolicy.TEN_BUILDS
 
@@ -35,9 +35,6 @@ pipeline {
       steps {
         script {
           env.BRANCH_NAME = env.BRANCH_NAME ?: 'main'
-          // Load this repo's own vars/ from the branch being built, not the library's
-          // default version, so Jenkinsfile changes and vars/*.groovy changes stay in sync.
-          library "scan-gradle-plugin@${env.BRANCH_NAME}"
         }
         setBuildDisplayName Branch: env.BRANCH_NAME
         githubStatusUpdate('pending')
