@@ -28,7 +28,19 @@ Closure policyEvaluation = { stage ->
     iqScanPatterns: [
       [scanPattern: 'build/dependencies/*.jar']
     ],
-    failBuildOnNetworkError: true
+    failBuildOnNetworkError: true,
+      reachability: [
+        javaAnalysis: [
+          enable: true,
+          includes: [
+            [pattern: 'build/dependencies/*.jar'],
+            [pattern: 'build/libs/scan-gradle-plugin-*-SNAPSHOT.jar']
+          ],
+          namespaces: [
+            [namespace: 'org.sonatype.gradle.plugins.scan']
+          ]
+        ]
+      ]
   )
 }
 
