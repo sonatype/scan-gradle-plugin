@@ -24,10 +24,7 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - name: License check
-        run: ./gradlew license --no-daemon --info
-
-      - name: Build with Gradle
+      - name: License check, Build and Unit Test
         run: ./gradlew build copyDependencies -x integrationTest -x javadoc --no-daemon --info --max-workers 2
         env:
           NEXUS_RM_USERNAME: ${{ secrets.NEXUS_RM_USERNAME }}
@@ -39,7 +36,8 @@ jobs:
           name: scan-gradle-plugin
           compression-level: 0 # no compression
           path: |
-            build/libs/scan-gradle-plugin-*.jar
+            build/libs/scan-gradle-plugin-*-SNAPSHOT.jar
+            build/libs/scan-gradle-plugin-*-SNAPSHOT-sources.jar
             build/test-results/*/*.xml
 
   it-tests:
@@ -57,8 +55,8 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - name: Build with Gradle
-        run: ./gradlew test --no-daemon --info -x javadoc ${{ matrix.it }}
+      - name: Build and run ITs
+        run: ./gradlew test --no-daemon --info -x license -x javadoc ${{ matrix.it }}
         env:
           NEXUS_RM_USERNAME: ${{ secrets.NEXUS_RM_USERNAME }}
           NEXUS_RM_PASSWORD: ${{ secrets.NEXUS_RM_PASSWORD }}
