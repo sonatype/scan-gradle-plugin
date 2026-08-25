@@ -71,14 +71,14 @@ pipeline {
     stage('Build and Test') {
       steps {
         gradleExec(
-            params.runIntegrationTests ? 'build copyDependencies integrationTest -x javadoc' :
-                'build copyDependencies -x integrationTest -x javadoc')
+            params.runIntegrationTests ? 'build copyDependencies integrationTest' :
+                'build copyDependencies -x integrationTest')
         collectTestResults(['**/test-results/*/*.xml'])
       }
     }
     stage('Collect Distribution Files') {
       steps {
-        collectDist([includes: ['build/libs/scan-gradle-plugin-*-SNAPSHOT.jar']])
+        collectDist([includes: ['build/libs/scan-gradle-plugin-*.jar']])
       }
     }
     stage('Evaluate Policies') {
