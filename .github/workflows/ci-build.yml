@@ -1,0 +1,64 @@
+name: Build Gradle Plugin (CI)
+
+on:
+  workflow_dispatch:
+    inputs:
+      runIntegrationTests:
+        description: "[Optional] If enabled it includes all integration tests; default: 'true'"
+        type: boolean
+        default: true
+  push:
+    branches:
+      - INT-10581-set-up-CI-builds-2
+
+jobs:
+  gradle-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup
+
+      - name: License check
+        run: ./gradlew license --no-daemon --info
+
+      - name: Build with Gradle
+        run: ./gradlew build copyDependencies -x integrationTest -x javadoc --no-daemon --info --max-workers 2
+        env:
+          NEXUS_RM_USERNAME: ${{ secrets.NEXUS_RM_USERNAME }}
+          NEXUS_RM_PASSWORD: ${{ secrets.NEXUS_RM_PASSWORD }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: scan-gradle-plugin
+          compression-level: 0 # no compression
+          path: |
+            build/libs/scan-gradle-plugin-*.jar
+            build/test-results/*/*.xml
+
+  it-tests:
+    strategy:
+      matrix:
+        it: [it1, it2, it3, it4]
+    runs-on: ubuntu-latest
+    if: ${{ inputs.runIntegrationTests == true }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup
+
+      - name: Build with Gradle
+        run: ./gradlew test --no-daemon --info -x javadoc ${{ matrix.it }}
+        env:
+          NEXUS_RM_USERNAME: ${{ secrets.NEXUS_RM_USERNAME }}
+          NEXUS_RM_PASSWORD: ${{ secrets.NEXUS_RM_PASSWORD }}

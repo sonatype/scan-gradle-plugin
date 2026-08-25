@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2016-present Sonatype, Inc. All rights reserved.
+ *
+ * Includes the third-party code listed at https://links.sonatype.com/products/clm/attributions.
+ * "Sonatype" is a trademark of Sonatype, Inc.
+ */
+
+def call(String branch, boolean runIntegrationTests) {
+  def gitHub = getGitHubClient('sonatype/scan-gradle-plugin')
+
+  def inputs = [ runIntegrationTests: runIntegrationTests ]
+  def workflowRun = gitHubTriggerWorkflow(gitHub, 'ci-build.yml', branch, inputs)
+
+  gitHubPollWorkflowCompletion(gitHub, workflowRun, 450, 30)
+
+  // successful release workflowRun run will have 1 artifact
+  gitHubArtifactDownload(gitHub, workflowRun, 1)
+}

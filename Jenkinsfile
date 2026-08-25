@@ -4,45 +4,11 @@
  * Includes the third-party code listed at https://links.sonatype.com/products/clm/attributions.
  * "Sonatype" is a trademark of Sonatype, Inc.
  */
-@Library(['private-pipeline-library', 'jenkins-shared', 'int-jenkins-shared']) _
+@Library(['scan-gradle-plugin', 'private-pipeline-library', 'jenkins-shared', 'int-jenkins-shared']) _
 
 Map<String, ?> pipelineCommon = pipelineCommon retentionPolicy: RetentionPolicy.TEN_BUILDS
 
 String deployBranch = 'main'
-
-properties([
-    parameters([
-        booleanParam(
-            name: 'runIntegrationTests',
-            defaultValue: true,
-            description: 'If checked it includes all integration tests; otherwise only unit tests will run.'
-        )
-    ])
-])
-
-Closure policyEvaluation = { stage ->
-  nexusPolicyEvaluation(
-    unstableBuildOnScanningWarnings: false,
-    iqStage: stage,
-    iqApplication: 'scan-gradle-plugin',
-    iqScanPatterns: [
-      [scanPattern: 'build/dependencies/*.jar']
-    ],
-    failBuildOnNetworkError: true,
-      reachability: [
-        javaAnalysis: [
-          enable: true,
-          includes: [
-            [pattern: 'build/dependencies/*.jar'],
-            [pattern: 'build/libs/scan-gradle-plugin-*-SNAPSHOT.jar']
-          ],
-          namespaces: [
-            [namespace: 'org.sonatype.gradle.plugins.scan']
-          ]
-        ]
-      ]
-  )
-}
 
 pipeline {
   agent { label pipelineCommon.agentLabel }
@@ -57,73 +23,80 @@ pipeline {
     )
     timestamps()
   }
+  parameters {
+    booleanParam(
+        name: 'runIntegrationTests',
+        defaultValue: true,
+        description: 'If checked it includes all integration tests; otherwise only unit tests will run.'
+    )
+  }
   stages {
-    stage('Preparation') {
+    stage('Prepare') {
       steps {
+        script {
+          env.BRANCH_NAME = env.BRANCH_NAME ?: 'main'
+          // Load this repo's own vars/ from the branch being built, not the library's
+          // default version, so Jenkinsfile changes and vars/*.groovy changes stay in sync.
+          library "scan-gradle-plugin@${env.BRANCH_NAME}"
+        }
+        setBuildDisplayName Branch: env.BRANCH_NAME
         githubStatusUpdate('pending')
-      }
-    }
-    stage('License Check') {
-      steps {
-        licenseCheck()
       }
     }
     stage('Build and Test') {
       steps {
-        gradleExec(
-            params.runIntegrationTests ? 'build copyDependencies integrationTest' :
-                'build copyDependencies -x integrationTest')
-        collectTestResults(['**/test-results/*/*.xml'])
+        runBuildWorkflow(env.BRANCH_NAME, params.runIntegrationTests)
+        collectTestResults(['target/**/test-results/*/*.xml'])
+      }
+    }
+    stage('Policy Evaluation') {
+      steps {
+        nexusPolicyEvaluation(
+          unstableBuildOnScanningWarnings: false,
+          iqStage: env.BRANCH_NAME == 'main' ? 'build': 'develop',
+          iqApplication: 'scan-gradle-plugin',
+          iqScanPatterns: [
+            //[scanPattern: 'build/dependencies/*.jar']
+            [scanPattern: 'target/build/libs/scan-gradle-plugin-*-SNAPSHOT.jar']
+          ],
+          failBuildOnNetworkError: true,
+          reachability: [
+            javaAnalysis: [
+              enable: true,
+              includes: [
+                //[pattern: 'build/dependencies/*.jar'],
+                [pattern: 'target/build/libs/scan-gradle-plugin-*-SNAPSHOT.jar']
+              ],
+              namespaces: [
+                [namespace: 'org.sonatype.gradle.plugins.scan']
+              ]
+            ]
+          ]
+        )
       }
     }
     stage('Collect Distribution Files') {
       steps {
-        collectDist([includes: ['build/libs/scan-gradle-plugin-*.jar']])
-      }
-    }
-    stage('Evaluate Policies') {
-      steps {
-        vulnerabilityScan(policyEvaluation, isDeployBranch(env, deployBranch) ? 'build' : 'develop')
-      }
-    }
-    stage('Upload Artifacts') {
-      when {
-        expression { return isDeployBranch(env, deployBranch) }
-      }
-      steps {
-        gradleExec("publish")
+        collectDist([includes: [
+            'target/build/libs/*.jar'
+        ]])
       }
     }
   }
   post {
+    always {
+      script {
+        if (env.BRANCH_NAME == 'main') {
+          buildNotifications(currentBuild, env)
+        }
+        deleteDir()
+      }
+    }
     success {
       githubStatusUpdate('success')
     }
     failure {
       githubStatusUpdate('failure')
-    }
-    always {
-      postHandler({ build, env -> buildNotifications(build, env) }, currentBuild, env)
-    }
-    cleanup() {
-      dockerRemoveImages()
-      deleteDir()
-    }
-  }
-}
-
-String BUILD_IMAGE_ID() { return "${sonatypeDockerRegistryId()}/integrations/gradle-build-pipeline" }
-
-def gradleExec(String cmd) {
-  dockerPrepareBuildImage(BUILD_IMAGE_ID(), true)
-  withCredentials([[$class: 'ZipFileBinding', credentialsId: 'gnupg', variable: 'gpgZip']]) {
-    withDockerImage(BUILD_IMAGE_ID(), 'rsc-ro-npmrc', '-v $gpgZip/gnupg:/home/jenkins/.gnupg') {
-      configFileProvider(
-        [configFile(fileId: 'external-gpg-init.gradle', variable: 'initGradlePath')]) {
-        sh 'chmod 700 /home/jenkins/.gnupg'
-        sh 'chmod 600 /home/jenkins/.gnupg/*'
-        sh "./gradlew --init-script $initGradlePath --stacktrace --console=plain --no-daemon --info ${cmd}"
-      }
     }
   }
 }

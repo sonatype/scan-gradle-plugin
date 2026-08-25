@@ -3,7 +3,7 @@ plugins {
   id 'com.gradle.plugin-publish' version '1.3.0'
   id 'org.jreleaser' version '1.15.0'
   id 'com.gradleup.shadow' version '9.0.0-rc3'
-  id 'signing'
+  id 'com.github.hierynomus.license' version '0.16.1'
 }
 
 apply from: 'gradle/integration-test.gradle'
@@ -51,15 +51,6 @@ jar {
   }
 }
 
-// sign distributions if configured; https://docs.gradle.org/current/userguide/signing_plugin.html
-signing {
-  required = {!version.endsWith('SNAPSHOT')}
-  if (!version.endsWith('SNAPSHOT')) {
-    useGpgCmd()
-  }
-  sign configurations.archives
-}
-
 allprojects {
   repositories {
     maven {
@@ -103,6 +94,19 @@ processResources {
   }
 }
 
+license {
+  header = file('header.txt')
+  excludes([
+      '**/*.md',
+      '.github/**',
+      'releasenotes/assets/css/style.scss',
+      'src/integTest/resources/**'
+  ])
+  mapping {
+    java = 'SLASHSTAR_STYLE'
+  }
+}
+
 test {
   maxHeapSize = '512m'
 }
@@ -124,50 +128,43 @@ tasks.shadowJar {
   mergeServiceFiles()
 }
 
-// configure deployment for releases and snapshots if configuration is present
-if (project.hasProperty('deployment')) {
-  publishing {
-    publications {
-      withType(MavenPublication) {
-        groupId = 'org.sonatype.gradle.plugins'
-        artifactId = project.name
-        version = project.version.toString()
+publishing {
+  publications {
+    withType(MavenPublication) {
+      groupId = 'org.sonatype.gradle.plugins'
+      artifactId = project.name
+      version = project.version.toString()
 
-        pom {
-          name = project.name
-          description = pluginDescription
+      pom {
+        name = project.name
+        description = pluginDescription
+        url = 'https://github.com/sonatype/scan-gradle-plugin'
+        organization {
+          name = 'Sonatype'
+          url = 'https://www.sonatype.com'
+        }
+        issueManagement {
+          system = 'GitHub'
+          url = 'https://github.com/sonatype/scan-gradle-plugin/issues'
+        }
+        licenses {
+          license {
+            name = 'Sonatype-Integration-Terms-EULA'
+            url = 'https://www.sonatype.com/dnt/usage/integration-api-eula'
+            distribution = 'repo'
+          }
+        }
+        scm {
+          connection = 'scm:git:git://github.com/sonatype/scan-gradle-plugin.git'
+          developerConnection = 'scm:git:ssh://git@github.com:sonatype/scan-gradle-plugin.git'
           url = 'https://github.com/sonatype/scan-gradle-plugin'
-          organization {
-            name = 'Sonatype'
-            url = 'https://www.sonatype.com'
-          }
-          issueManagement {
-            system = 'GitHub'
-            url = 'https://github.com/sonatype/scan-gradle-plugin/issues'
-          }
-          licenses {
-            license {
-              name = 'Sonatype-Integration-Terms-EULA'
-              url = 'https://www.sonatype.com/dnt/usage/integration-api-eula'
-              distribution = 'repo'
-            }
-          }
-          scm {
-            connection = 'scm:git:git://github.com/sonatype/scan-gradle-plugin.git'
-            developerConnection = 'scm:git:ssh://git@github.com:sonatype/scan-gradle-plugin.git'
-            url = 'https://github.com/sonatype/scan-gradle-plugin'
-          }
         }
       }
     }
-    repositories {
-      maven {
-        url = version.endsWith('SNAPSHOT') ? deployment.snapshot.url : deployment.release.url
-        credentials {
-          username = version.endsWith('SNAPSHOT') ? deployment.snapshot.username : deployment.release.username
-          password = version.endsWith('SNAPSHOT') ? deployment.snapshot.password : deployment.release.password
-        }
-      }
+  }
+  repositories {
+    maven {
+      url = layout.buildDirectory.dir('staging-deploy')
     }
   }
 }
@@ -178,21 +175,21 @@ jreleaser {
     description = pluginDescription
     website = pluginUrl
   }
-  //signing {
-  //  active = 'ALWAYS'
-  //  armored = true
-  //  def publicKey = System.getenv('JRELEASER_GPG_PUBLIC_KEY')?.decodeBase64() ?
-  //      new String(System.getenv('JRELEASER_GPG_PUBLIC_KEY').decodeBase64()) : ''
-  //  def secretKey = System.getenv('JRELEASER_GPG_SECRET_KEY')?.decodeBase64() ?
-  //      new String(System.getenv('JRELEASER_GPG_SECRET_KEY').decodeBase64()) : ''
-  //
-  //  if (publicKey) {
-  //    System.setProperty('jreleaser.gpg.public.key', publicKey)
-  //  }
-  //  if (secretKey) {
-  //    System.setProperty('jreleaser.gpg.secret.key', secretKey)
-  //  }
-  //}
+  signing {
+    active = 'ALWAYS'
+    armored = true
+    def publicKey = System.getenv('JRELEASER_GPG_PUBLIC_KEY')?.decodeBase64() ?
+        new String(System.getenv('JRELEASER_GPG_PUBLIC_KEY').decodeBase64()) : ''
+    def secretKey = System.getenv('JRELEASER_GPG_SECRET_KEY')?.decodeBase64() ?
+        new String(System.getenv('JRELEASER_GPG_SECRET_KEY').decodeBase64()) : ''
+
+    if (publicKey) {
+      System.setProperty('jreleaser.gpg.public.key', publicKey)
+    }
+    if (secretKey) {
+      System.setProperty('jreleaser.gpg.secret.key', secretKey)
+    }
+  }
   deploy {
     maven {
       mavenCentral {
