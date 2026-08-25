@@ -213,3 +213,19 @@ tasks.register('cleanupUnwantedArtifacts') {
 afterReleaseBuild.dependsOn publish
 publish.finalizedBy cleanupUnwantedArtifacts
 publish.finalizedBy publishPlugins
+
+/*
+ * Blocks releases with SNAPSHOT dependencies, if the `isReleaseJob` project property is set (not set by default).
+ * User `-PisReleaseJob` to enable it
+ */
+if (project.hasProperty('isReleaseJob')) {
+  project.getConfigurations().configureEach { config ->
+    config.incoming.beforeResolve {
+      config.dependencies.each { dep ->
+        if (dep.hasProperty('version') && dep.version?.contains('SNAPSHOT')) {
+          throw new GradleException("SNAPSHOT versions are forbidden in releases.\nculprit: ${dep.group}:${dep.name}:${dep.version}")
+        }
+      }
+    }
+  }
+}
