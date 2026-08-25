@@ -45,7 +45,10 @@ pipeline {
     stage('Build and Test') {
       steps {
         runBuildWorkflow(env.BRANCH_NAME, params.runIntegrationTests)
-        collectTestResults(['target/test-results/test/*.xml', 'target/it*/*.xml'])
+        collectTestResults(['target/test-results/test/*.xml'])
+        if (params.runIntegrationTests) {
+          collectTestResults(['target/it*/*.xml'])
+        }
       }
     }
     stage('Policy Evaluation') {
@@ -77,7 +80,7 @@ pipeline {
     stage('Collect Distribution Files') {
       steps {
         collectDist([includes: [
-            'target/libs/*.jar'
+            'target/libs/*-SNAPSHOT.jar'
         ]])
       }
     }
