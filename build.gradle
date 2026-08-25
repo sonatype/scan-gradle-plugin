@@ -31,6 +31,7 @@ gradlePlugin {
 java {
   sourceCompatibility = JavaVersion.VERSION_17
   targetCompatibility = JavaVersion.VERSION_17
+  withJavadocJar()
   withSourcesJar()
 }
 
@@ -68,7 +69,7 @@ allprojects {
 ext {
   nexusPlatformApiVersion='5.2.16-01'
   ossIndexClientVersion='1.8.2'
-  logbackVersion='1.5.35'
+  logbackVersion='1.6.3'
   commonsIoVersion='2.16.1'
 
   junitVersion='4.13.2'

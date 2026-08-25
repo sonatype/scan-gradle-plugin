@@ -11,7 +11,7 @@ def call(String branch, boolean runIntegrationTests) {
   def inputs = [ runIntegrationTests: runIntegrationTests ]
   def workflowRun = gitHubTriggerWorkflow(gitHub, 'ci-build.yml', branch, inputs)
 
-  gitHubPollWorkflowCompletion(gitHub, workflowRun, 450, 30)
+  gitHubPollWorkflowCompletion(gitHub, workflowRun, 600, 30)
 
   // successful release workflowRun run will have 1 or 5 artifacts
   gitHubArtifactDownload(gitHub, workflowRun, runIntegrationTests ? 5 : 1)
