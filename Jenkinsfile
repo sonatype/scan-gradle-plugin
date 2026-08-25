@@ -46,7 +46,7 @@ pipeline {
     stage('Build and Test') {
       steps {
         runBuildWorkflow(env.BRANCH_NAME, params.runIntegrationTests)
-        collectTestResults(['target/**/test-results/*/*.xml'])
+        collectTestResults(['target/test-results/*/*.xml'])
       }
     }
     stage('Policy Evaluation') {
@@ -57,7 +57,7 @@ pipeline {
           iqApplication: 'scan-gradle-plugin',
           iqScanPatterns: [
             //[scanPattern: 'build/dependencies/*.jar']
-            [scanPattern: 'target/build/libs/scan-gradle-plugin-*-SNAPSHOT.jar']
+            [scanPattern: 'target/libs/scan-gradle-plugin-*-SNAPSHOT.jar']
           ],
           failBuildOnNetworkError: true,
           reachability: [
@@ -65,7 +65,7 @@ pipeline {
               enable: true,
               includes: [
                 //[pattern: 'build/dependencies/*.jar'],
-                [pattern: 'target/build/libs/scan-gradle-plugin-*-SNAPSHOT.jar']
+                [pattern: 'target/libs/scan-gradle-plugin-*-SNAPSHOT.jar']
               ],
               namespaces: [
                 [namespace: 'org.sonatype.gradle.plugins.scan']
