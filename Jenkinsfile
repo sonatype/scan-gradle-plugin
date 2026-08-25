@@ -45,10 +45,9 @@ pipeline {
     stage('Build and Test') {
       steps {
         runBuildWorkflow(env.BRANCH_NAME, params.runIntegrationTests)
-        collectTestResults(['target/test-results/test/*.xml'])
-        if (params.runIntegrationTests) {
-          collectTestResults(['target/it*/*.xml'])
-        }
+        collectTestResults(params.runIntegrationTests
+            ? ['target/test-results/test/*.xml', 'target/it*/*.xml']
+            : ['target/test-results/test/*.xml'])
       }
     }
     stage('Policy Evaluation') {
