@@ -56,16 +56,16 @@ pipeline {
           iqStage: env.BRANCH_NAME == 'main' ? 'build': 'develop',
           iqApplication: 'scan-gradle-plugin',
           iqScanPatterns: [
-            //[scanPattern: 'build/dependencies/*.jar']
-            [scanPattern: 'target/libs/scan-gradle-plugin-*-SNAPSHOT.jar']
+            [scanPattern: 'target/dependencies/*.jar'],
+            [scanPattern: 'target/libs/scan-gradle-plugin-*-main.jar']
           ],
           failBuildOnNetworkError: true,
           reachability: [
             javaAnalysis: [
               enable: true,
               includes: [
-                //[pattern: 'build/dependencies/*.jar'],
-                [pattern: 'target/libs/scan-gradle-plugin-*-SNAPSHOT.jar']
+                [pattern: 'target/dependencies/*.jar'],
+                [pattern: 'target/libs/scan-gradle-plugin-*-SNAPSHOT-main.jar']
               ],
               namespaces: [
                 [namespace: 'org.sonatype.gradle.plugins.scan']

@@ -38,6 +38,8 @@ jobs:
           path: |
             build/libs/scan-gradle-plugin-*-SNAPSHOT.jar
             build/libs/scan-gradle-plugin-*-SNAPSHOT-sources.jar
+            build/libs/scan-gradle-plugin-*-SNAPSHOT-main.jar
+            build/dependencies/*.jar
             build/test-results/*/*.xml
 
   it-tests:
