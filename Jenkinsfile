@@ -70,7 +70,9 @@ pipeline {
     }
     stage('Build and Test') {
       steps {
-        gradleExec(params.runIntegrationTests ? 'build copyDependencies integrationTest' : 'build copyDependencies')
+        gradleExec(
+            params.runIntegrationTests ? 'build copyDependencies integrationTest -x javadoc' :
+                'build copyDependencies -x integrationTest -x javadoc')
         collectTestResults(['**/test-results/*/*.xml'])
       }
     }
