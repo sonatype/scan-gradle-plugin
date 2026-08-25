@@ -97,10 +97,7 @@ processResources {
 license {
   header = file('header.txt')
   excludes([
-      '**/*.md',
-      '.github/**',
-      'releasenotes/assets/css/style.scss',
-      'src/integTest/resources/**'
+      '**/banner.txt'
   ])
   mapping {
     java = 'SLASHSTAR_STYLE'
