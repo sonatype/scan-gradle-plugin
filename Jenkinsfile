@@ -4,7 +4,7 @@
  * Includes the third-party code listed at https://links.sonatype.com/products/clm/attributions.
  * "Sonatype" is a trademark of Sonatype, Inc.
  */
-@Library(['scan-gradle-plugin@${env.BRANCH_NAME}', 'private-pipeline-library', 'jenkins-shared', 'int-jenkins-shared']) _
+@Library(['scan-gradle-plugin@INT-10581-set-up-CI-builds-2', 'private-pipeline-library', 'jenkins-shared', 'int-jenkins-shared']) _
 
 Map<String, ?> pipelineCommon = pipelineCommon retentionPolicy: RetentionPolicy.TEN_BUILDS
 
