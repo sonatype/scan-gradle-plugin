@@ -11,6 +11,11 @@ import java.io.File;
 import com.sonatype.insight.scan.model.Scan;
 
 /**
+ * Result of a scan operation.
+ * <p>
+ * Note: {@link #getScan()} may return {@code null} when the {@code instanceof Scan} guard in the constructor fails,
+ * which can occur during xstream relocation or deserialization problems. Callers must null-check the return value.
+ *
  * @since 1.0.1
  */
 public class ScanResult

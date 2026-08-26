@@ -20,6 +20,7 @@ import com.sonatype.insight.brain.client.ConfigurationClient;
 import com.sonatype.insight.brain.client.RestClientFactory.RestClient;
 import com.sonatype.insight.scan.model.ClientScanResult;
 import com.sonatype.insight.scan.model.ClientScanType;
+import com.sonatype.insight.scan.model.Scan;
 import com.sonatype.insight.scan.module.model.Module;
 import org.sonatype.gradle.plugins.scan.nexus.iq.api.ApplicationPolicyEvaluation;
 import org.sonatype.gradle.plugins.scan.nexus.iq.api.ProprietaryConfig;
@@ -169,8 +170,13 @@ public class DefaultIqClient
     if (policyEvaluator == null) {
       throwServerNotConfiguredException();
     }
+    Scan scan = scanResult.getScan();
+    if (scan == null) {
+      throw new IqClientException(
+          "Scan model could not be read. This may indicate an xstream relocation or deserialization problem.");
+    }
     ClientScanResult clientScanResult =
-        new ClientScanResult(scanResult.getScanFile(), scanResult.getScan().hasThirdPartyScanContent());
+        new ClientScanResult(scanResult.getScanFile(), scan.hasThirdPartyScanContent());
 
     log.ifPresent(logger -> logger.info("{} Evaluating application {} for stage {}.",
         getFormattedCurrentDateTime(), applicationId, stageId));
