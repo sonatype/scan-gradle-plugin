@@ -68,6 +68,9 @@ allprojects {
 
 ext {
   nexusPlatformApiVersion='5.2.16-01'
+  insightBrainClientVersion='2.1.16-01'
+  insightScannerVersion='3.0.58-01'
+  clmDtoModelVersion='2.1.37-01'
   ossIndexClientVersion='1.8.2'
   logbackVersion='1.6.3'
   commonsIoVersion='2.16.1'
@@ -79,6 +82,12 @@ ext {
 
 dependencies {
   implementation "com.sonatype.nexus:nexus-platform-api:$nexusPlatformApiVersion"
+  implementation "com.sonatype.insight.brain:insight-brain-client:$insightBrainClientVersion"
+  implementation "com.sonatype.clm:com.sonatype.clm.dto.model:$clmDtoModelVersion"
+  implementation "com.sonatype.insight.scan:insight-scanner-archive:$insightScannerVersion"
+  implementation "com.sonatype.insight.scan:insight-client-utils:$insightScannerVersion"
+  implementation "com.sonatype.insight.scan:insight-scanner-model:$insightScannerVersion"
+  implementation "com.sonatype.insight.scan:insight-module-model:$insightScannerVersion"
   implementation "org.sonatype.ossindex:ossindex-service-client:$ossIndexClientVersion"
   implementation "ch.qos.logback:logback-classic:$logbackVersion"
   implementation "commons-io:commons-io:$commonsIoVersion"
