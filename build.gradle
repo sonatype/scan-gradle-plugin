@@ -81,8 +81,15 @@ ext {
 }
 
 dependencies {
-  implementation "com.sonatype.nexus:nexus-platform-api:$nexusPlatformApiVersion"
+  // insight-brain-client MUST be declared before nexus-platform-api: platform-api shades
+  // (physically bundles) an older com.sonatype.insight.brain.client.* set, so classpath
+  // declaration order — not the exclude below — is what makes the newer 2.1.16-01 RestClient
+  // (with compareServerVersion()/getServerVersion()) win. The exclude is symbolic (a module
+  // exclude cannot remove shaded classes). This whole block is removed in the platform-api-removal step.
   implementation "com.sonatype.insight.brain:insight-brain-client:$insightBrainClientVersion"
+  implementation("com.sonatype.nexus:nexus-platform-api:$nexusPlatformApiVersion") {
+    exclude group: 'com.sonatype.insight.brain', module: 'insight-brain-client'
+  }
   implementation "com.sonatype.clm:com.sonatype.clm.dto.model:$clmDtoModelVersion"
   implementation "com.sonatype.insight.scan:insight-scanner-archive:$insightScannerVersion"
   implementation "com.sonatype.insight.scan:insight-client-utils:$insightScannerVersion"
