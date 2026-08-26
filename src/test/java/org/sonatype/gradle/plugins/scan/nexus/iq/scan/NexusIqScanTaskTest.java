@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.Consumer;
 
-import com.sonatype.nexus.api.common.ServerConfig;
-import com.sonatype.nexus.api.exception.IqClientException;
-import com.sonatype.nexus.api.iq.ApplicationPolicyEvaluation;
-import com.sonatype.nexus.api.iq.ProprietaryConfig;
-import com.sonatype.nexus.api.iq.internal.InternalIqClient;
-import com.sonatype.nexus.api.iq.internal.InternalIqClientBuilder;
-import com.sonatype.nexus.api.iq.scan.ScanResult;
+import org.sonatype.gradle.plugins.scan.nexus.iq.api.ApplicationPolicyEvaluation;
+import org.sonatype.gradle.plugins.scan.nexus.iq.api.ProprietaryConfig;
+import org.sonatype.gradle.plugins.scan.nexus.iq.client.IqClient;
+import org.sonatype.gradle.plugins.scan.nexus.iq.client.IqClientBuilder;
+import org.sonatype.gradle.plugins.scan.nexus.iq.client.IqClientException;
+import org.sonatype.gradle.plugins.scan.nexus.iq.client.common.ServerConfig;
+import org.sonatype.gradle.plugins.scan.nexus.iq.client.scan.ScanResult;
 
 import org.junit.After;
 import org.mockito.*;
@@ -60,13 +60,13 @@ public class NexusIqScanTaskTest
   private static final String USER_AGENT_REGEX =
       "Sonatype_Nexus_Gradle/[^\\s]+ \\(Java [^;]+; [^;]+ [^;]+; Gradle [^;]+\\)";
 
-  private MockedStatic<InternalIqClientBuilder> internalIqClientBuilder;
+  private MockedStatic<IqClientBuilder> iqClientBuilderMockedStatic;
 
   @Rule
   public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
   @Mock
-  private InternalIqClient iqClientMock;
+  private IqClient iqClientMock;
 
   @Mock
   private DependenciesFinder dependenciesFinderMock;
@@ -76,13 +76,13 @@ public class NexusIqScanTaskTest
 
   @Before
   public void setup() throws IqClientException {
-    internalIqClientBuilder = Mockito.mockStatic(InternalIqClientBuilder.class);
+    iqClientBuilderMockedStatic = Mockito.mockStatic(IqClientBuilder.class);
 
-    InternalIqClientBuilder builderMock = mock(InternalIqClientBuilder.class);
+    IqClientBuilder builderMock = mock(IqClientBuilder.class);
     when(builderMock.withServerConfig(any(ServerConfig.class))).thenReturn(builderMock);
     when(builderMock.withLogger(any(Logger.class))).thenReturn(builderMock);
     when(builderMock.withUserAgent(userAgentCaptor.capture())).thenReturn(builderMock);
-    when(InternalIqClientBuilder.create()).thenReturn(builderMock);
+    when(IqClientBuilder.create()).thenReturn(builderMock);
 
     when(iqClientMock.verifyOrCreateApplication(anyString(), nullable(String.class))).thenReturn(true);
 
@@ -98,7 +98,7 @@ public class NexusIqScanTaskTest
 
   @After
   public void cleanup() {
-    internalIqClientBuilder.close();
+    iqClientBuilderMockedStatic.close();
   }
 
   @Test

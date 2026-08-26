@@ -18,18 +18,18 @@ import java.util.stream.Stream;
 
 import com.sonatype.insight.brain.client.PolicyAction;
 import com.sonatype.insight.scan.module.model.Module;
-import com.sonatype.nexus.api.common.Authentication;
-import com.sonatype.nexus.api.common.ServerConfig;
-import com.sonatype.nexus.api.exception.IqClientException;
-import com.sonatype.nexus.api.iq.Action;
-import com.sonatype.nexus.api.iq.ApplicationPolicyEvaluation;
-import com.sonatype.nexus.api.iq.PolicyActionResolver;
-import com.sonatype.nexus.api.iq.PolicyAlert;
-import com.sonatype.nexus.api.iq.PolicyFact;
-import com.sonatype.nexus.api.iq.ProprietaryConfig;
-import com.sonatype.nexus.api.iq.internal.InternalIqClient;
-import com.sonatype.nexus.api.iq.internal.InternalIqClientBuilder;
-import com.sonatype.nexus.api.iq.scan.ScanResult;
+import org.sonatype.gradle.plugins.scan.nexus.iq.api.Action;
+import org.sonatype.gradle.plugins.scan.nexus.iq.api.ApplicationPolicyEvaluation;
+import org.sonatype.gradle.plugins.scan.nexus.iq.api.PolicyAlert;
+import org.sonatype.gradle.plugins.scan.nexus.iq.api.PolicyFact;
+import org.sonatype.gradle.plugins.scan.nexus.iq.api.ProprietaryConfig;
+import org.sonatype.gradle.plugins.scan.nexus.iq.client.IqClient;
+import org.sonatype.gradle.plugins.scan.nexus.iq.client.IqClientBuilder;
+import org.sonatype.gradle.plugins.scan.nexus.iq.client.IqClientException;
+import org.sonatype.gradle.plugins.scan.nexus.iq.client.common.Authentication;
+import org.sonatype.gradle.plugins.scan.nexus.iq.client.common.ServerConfig;
+import org.sonatype.gradle.plugins.scan.nexus.iq.client.impl.PolicyActionResolver;
+import org.sonatype.gradle.plugins.scan.nexus.iq.client.scan.ScanResult;
 
 import org.sonatype.gradle.plugins.scan.common.DependenciesFinder;
 import org.sonatype.gradle.plugins.scan.common.PluginVersionUtils;
@@ -86,7 +86,7 @@ public class NexusIqScanTask
                 "simulated/priorities");
       }
       else {
-        InternalIqClient iqClient = InternalIqClientBuilder.create()
+        IqClient iqClient = IqClientBuilder.create()
             .withServerConfig(new ServerConfig(new URI(getServerUrl()),
                     new Authentication(extension.getUsername(), extension.getPassword())))
             .withLogger(log)
@@ -133,7 +133,7 @@ public class NexusIqScanTask
     }
   }
 
-  private void verifyOrCreateApplication(InternalIqClient iqClient) throws IqClientException {
+  private void verifyOrCreateApplication(IqClient iqClient) throws IqClientException {
     if (!iqClient.verifyOrCreateApplication(extension.getApplicationId(), extension.getOrganizationId())) {
       String message;
       if (StringUtils.isBlank(extension.getOrganizationId())) {
