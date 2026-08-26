@@ -43,7 +43,9 @@ The main source is organized under [`src/main/java/org/sonatype/gradle/plugins/s
 
 Notable runtime dependencies (declared in [`build.gradle`](../build.gradle)):
 
-- `com.sonatype.nexus:nexus-platform-api` – Nexus IQ / Lifecycle client.
+- `com.sonatype.insight.brain:insight-brain-client` – Nexus IQ / Lifecycle policy evaluation client.
+- `com.sonatype.insight.scan:insight-scanner-archive` (with `insight-client-utils`, `insight-scanner-model`, `insight-module-model`) – Component scanning and module model for Nexus IQ.
+- `com.sonatype.clm:com.sonatype.clm.dto.model` – Data transfer objects for IQ Server communication.
 - `org.sonatype.ossindex:ossindex-service-client` – OSS Index / Sonatype Guide client.
 
 The plugin supports projects written in Java, Kotlin, Scala and Groovy.
@@ -71,8 +73,9 @@ Gradle wrapper:
 ./gradlew clean publishToMavenLocal -x integrationTest
 ```
 
-The build resolves `com.sonatype.nexus:nexus-platform-api` from an internal Sonatype Maven repository (`srsa`), so the
-`NEXUS_RM_USERNAME` and `NEXUS_RM_PASSWORD` environment variables must be set.
+The plugin's IQ-related dependencies (`insight-brain-client`, `insight-scanner-*`, `com.sonatype.clm.dto.model`)
+are resolved from an internal Sonatype Maven repository (`srsa`), so the `NEXUS_RM_USERNAME` and
+`NEXUS_RM_PASSWORD` environment variables must be set.
 
 The final plugin jar is assembled by the [Gradle Shadow plugin][4] (`shadowJar`), which bundles the plugin and its
 dependencies and **relocates** `org.objectweb.asm` and `org.apache.commons` under
