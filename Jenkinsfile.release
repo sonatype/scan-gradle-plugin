@@ -48,12 +48,12 @@ pipeline {
         updateVersion(params.version)
         setBuildDisplayName Version: params.version
         withSonatypeZionSsh() {
-          sh """
-              git config push.default simple
+          runSafely """
               git add gradle.properties
               git commit -m 'Release: ${params.version}'
+              git tag -a release-${params.version} -m 'Release: ${params.version}'"
               git pull --no-rebase --no-edit origin main
-              git push origin HEAD:main
+              git push --no-verify origin main
           """
         }
       }
@@ -91,14 +91,14 @@ pipeline {
         // FIXME uncomment after the corresponding topic was created in Paligo
         // updateDownloadAndCompatibilityPage(params.version)
 
+        createReleaseFromTag("release-${params.version}")
         updateVersion(params.nextVersion)
         withSonatypeZionSsh() {
-          sh """
-              git config push.default simple
+          runSafely """
               git add gradle.properties
               git commit -m 'update to next version: ${params.nextVersion}'
               git pull --no-rebase --no-edit origin main
-              git push origin HEAD:main
+              git push --no-verify origin main
           """
         }
       }
