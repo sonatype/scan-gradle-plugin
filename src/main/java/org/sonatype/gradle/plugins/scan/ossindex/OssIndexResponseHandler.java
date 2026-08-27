@@ -16,10 +16,19 @@ import org.gradle.api.artifacts.ResolvedDependency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Handler for processing OSS Index response data.
+ */
 public interface OssIndexResponseHandler
 {
+  /**
+   * Shared logger for response handlers.
+   */
   Logger log = LoggerFactory.getLogger(OssIndexResponseHandler.class);
 
+  /**
+   * Processes the OSS Index response and reports vulnerabilities.
+   */
   boolean handleOssIndexResponse(
       Set<ResolvedDependency> dependencies,
       Map<ResolvedDependency, PackageUrl> dependenciesMap,

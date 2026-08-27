@@ -41,6 +41,9 @@ import static org.gradle.api.plugins.JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_
 import static org.gradle.api.plugins.JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME;
 import static org.gradle.api.plugins.JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME;
 
+/**
+ * Finds and resolves dependencies for Gradle projects.
+ */
 public class DependenciesFinder
 {
   private static final String RELEASE_COMPILE_LEGACY_CONFIGURATION_NAME = "_releaseCompile";
@@ -62,6 +65,9 @@ public class DependenciesFinder
       RELEASE_COMPILE_CONFIGURATION_NAME,
       RELEASE_RUNTIME_CONFIGURATION_NAME);
 
+  /**
+   * Finds resolved dependencies for the given project.
+   */
   public Set<ResolvedDependency> findResolvedDependencies(
       Project project,
       boolean allConfigurations,
@@ -91,6 +97,9 @@ public class DependenciesFinder
         }).collect(collectResolvedDependencies()).values());
   }
 
+  /**
+   * Finds modules for the given root project and its subprojects.
+   */
   public List<Module> findModules(
       Project rootProject,
       boolean allConfigurations,

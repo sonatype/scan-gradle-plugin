@@ -46,15 +46,24 @@ import org.gradle.api.Project;
 import org.gradle.api.UncheckedIOException;
 import org.gradle.api.artifacts.ResolvedDependency;
 
+/**
+ * Response handler that produces a CycloneDX SBOM from OSS Index scan results.
+ */
 public class CycloneDxResponseHandler
     implements OssIndexResponseHandler
 {
+  /**
+   * Default output filename for the CycloneDX BOM JSON file.
+   */
   public static final String FILE_NAME_OUTPUT = "oss-index-cyclonedx-bom.json";
 
   private final OssIndexPluginExtension extension;
 
   private final Project project;
 
+  /**
+   * Constructs a handler with the given extension configuration and Gradle project.
+   */
   public CycloneDxResponseHandler(OssIndexPluginExtension extension, Project project) {
     this.extension = extension;
     this.project = project;
