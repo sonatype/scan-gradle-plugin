@@ -12,3 +12,5 @@ target/
 .env
 .secrets
 /.junie/
+/docs/superpowers/
+/.superpowers/

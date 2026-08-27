@@ -55,7 +55,7 @@ jar {
 allprojects {
   repositories {
     maven {
-      name = 'srsa'
+      name = 'sonatype.repo.sonatype.app'
       url = 'https://sonatype.repo.sonatype.app/repository/maven-private'
       credentials {
         username = System.getenv("NEXUS_RM_USERNAME")
@@ -67,33 +67,24 @@ allprojects {
 }
 
 ext {
-  insightBrainClientVersion='2.1.16-01'
   insightScannerVersion='3.0.58-01'
-  clmDtoModelVersion='2.1.37-01'
-  ossIndexClientVersion='1.8.2'
-  logbackVersion='1.6.3'
-  commonsIoVersion='2.16.1'
-
-  junitVersion='4.13.2'
-  mockitoVersion='5.12.0'
-  assertJVersion= '3.27.7'
 }
 
 dependencies {
-  implementation "com.sonatype.insight.brain:insight-brain-client:$insightBrainClientVersion"
-  implementation "com.sonatype.clm:com.sonatype.clm.dto.model:$clmDtoModelVersion"
+  implementation "com.sonatype.insight.brain:insight-brain-client:2.1.16-01"
+  implementation "com.sonatype.clm:com.sonatype.clm.dto.model:2.1.37-01"
   implementation "com.sonatype.insight.scan:insight-scanner-archive:$insightScannerVersion"
   implementation "com.sonatype.insight.scan:insight-client-utils:$insightScannerVersion"
   implementation "com.sonatype.insight.scan:insight-scanner-model:$insightScannerVersion"
   implementation "com.sonatype.insight.scan:insight-module-model:$insightScannerVersion"
-  implementation "org.sonatype.ossindex:ossindex-service-client:$ossIndexClientVersion"
-  implementation "ch.qos.logback:logback-classic:$logbackVersion"
-  implementation "commons-io:commons-io:$commonsIoVersion"
+  implementation "org.sonatype.ossindex:ossindex-service-client:1.8.2"
+  implementation "ch.qos.logback:logback-classic:1.6.3"
+  implementation "commons-io:commons-io:2.16.1"
 
   testImplementation gradleTestKit()
-  testImplementation "junit:junit:$junitVersion"
-  testImplementation "org.assertj:assertj-core:$assertJVersion"
-  testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+  testImplementation "junit:junit:4.13.2"
+  testImplementation "org.assertj:assertj-core:3.27.7"
+  testImplementation "org.mockito:mockito-core:5.12.0"
 }
 
 processResources {
