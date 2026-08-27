@@ -71,20 +71,33 @@ ext {
 }
 
 dependencies {
-  implementation "com.sonatype.insight.brain:insight-brain-client:2.1.16-01"
-  implementation "com.sonatype.clm:com.sonatype.clm.dto.model:2.1.37-01"
+  implementation 'com.sonatype.insight.brain:insight-brain-client:2.1.16-01'
+  implementation 'com.sonatype.clm:com.sonatype.clm.dto.model:2.1.37-01'
   implementation "com.sonatype.insight.scan:insight-scanner-archive:$insightScannerVersion"
   implementation "com.sonatype.insight.scan:insight-client-utils:$insightScannerVersion"
   implementation "com.sonatype.insight.scan:insight-scanner-model:$insightScannerVersion"
   implementation "com.sonatype.insight.scan:insight-module-model:$insightScannerVersion"
-  implementation "org.sonatype.ossindex:ossindex-service-client:1.8.2"
-  implementation "ch.qos.logback:logback-classic:1.6.3"
-  implementation "commons-io:commons-io:2.16.1"
+  implementation 'org.sonatype.ossindex:ossindex-service-client:1.8.2'
+  implementation 'ch.qos.logback:logback-classic:1.6.3'
+  implementation 'commons-io:commons-io:2.16.1'
+
+  // Transitive dependency pinning
+  constraints {
+    implementation('com.fasterxml.woodstox:woodstox-core:7.2.2') {
+      because('Pinning version to avoid license selection issues')
+    }
+    implementation('org.jsoup:jsoup:1.23.2') {
+      because('Pinning version to avoid CVE-2026-75140 and sonatype-2026-005445')
+    }
+    implementation('org.codehaus.plexus:plexus-utils:3.6.2') {
+      because('Pinning version to avoid CVE-2025-67030')
+    }
+  }
 
   testImplementation gradleTestKit()
-  testImplementation "junit:junit:4.13.2"
-  testImplementation "org.assertj:assertj-core:3.27.7"
-  testImplementation "org.mockito:mockito-core:5.12.0"
+  testImplementation 'junit:junit:4.13.2'
+  testImplementation 'org.assertj:assertj-core:3.27.7'
+  testImplementation 'org.mockito:mockito-core:5.12.0'
 }
 
 processResources {
