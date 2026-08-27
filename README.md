@@ -423,19 +423,3 @@ ossIndexAudit {
 ```
 
 See more information about attributes matching for variant selection see https://docs.gradle.org/current/userguide/variant_model.html#sec:variant-select-errors
-
-## Contributing
-
-We care a lot about making the world a safer place, and that's why we created this `scan-gradle-plugin`. If you as well want to speed up the pace of software development by working on this project, jump on in! Before you start work, create a new issue, or comment on an existing issue, to let others know you are!
-
-Check the full contributing guidelines at: [CONTRIBUTING.md](./.github/CONTRIBUTING.md)
-
-## The Fine Print
-
-The `scan-gradle-plugin` is supported by Sonatype. Customers may make support requests to [https://support.sonatype.com](https://support.sonatype.com). 
-
-## Getting help
-
-Looking to contribute to our code but need some help? There's a few ways to get information:
-
-* Chat with us on [Gitter](https://gitter.im/sonatype/nexus-developers)

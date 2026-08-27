@@ -1,4 +1,4 @@
-A lot of awesome people have contributed to this project! Here they are:
+While it was part of the community, a lot of awesome people have contributed to this project! Here they are:
 
 Sonatype internal people:
 

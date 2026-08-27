@@ -1,6 +1,0 @@
-[user]
-	name = Sonatype Zion
-	email = sonatype-zion@sonatype.com
-[url "git@github.com:"]
-	insteadOf = https://github.com/
-
