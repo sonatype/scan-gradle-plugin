@@ -12,7 +12,7 @@ import java.net.URISyntaxException;
 import static java.util.Objects.requireNonNull;
 
 /**
- * This class is used to represent the <tt>address</tt> and optionally any <tt>authentication</tt> information necessary
+ * This class is used to represent the {@code address} and optionally any {@code authentication} information necessary
  * to connect to an external server resource.
  */
 public class ServerConfig
@@ -25,8 +25,8 @@ public class ServerConfig
    * The {@link URI} representing the address is required.
    *
    * @param address the URI of the external resource.
-   * @throws URISyntaxException   if <tt>address</tt> is not valid.
-   * @throws NullPointerException if <tt>address</tt> not provided.
+   * @throws URISyntaxException   if {@code address} is not valid.
+   * @throws NullPointerException if {@code address} not provided.
    */
   public ServerConfig(final URI address) throws URISyntaxException {
     this(address, (Authentication) null);
@@ -37,7 +37,7 @@ public class ServerConfig
    *
    * @param address        the URI of the external resource.
    * @param authentication the authentication details.
-   * @throws NullPointerException if <tt>address</tt> not provided.
+   * @throws NullPointerException if {@code address} not provided.
    */
   public ServerConfig(final URI address, final Authentication authentication) {
     requireNonNull(address, "Address must not be null");

@@ -12,7 +12,7 @@ import java.io.Serializable;
 import static java.util.Objects.requireNonNull;
 
 /**
- * This class is an abstraction of authentication credentials. Internally passwords are stored as <tt>char[]</tt> to
+ * This class is an abstraction of authentication credentials. Internally passwords are stored as {@code char[]} to
  * avoid logging any sensitive information as well as allowing the objects to be garbage collected properly.
  */
 public class Authentication
@@ -26,11 +26,11 @@ public class Authentication
   private final char[] password;
 
   /**
-   * Both <tt>username</tt> and <tt>password</tt> are required.
+   * Both {@code username} and {@code password} are required.
    *
    * @param username the username.
    * @param password the password.
-   * @throws NullPointerException if either <tt>username</tt> or <tt>password</tt> not provided.
+   * @throws NullPointerException if either {@code username} or {@code password} not provided.
    */
   public Authentication(final String username, final char[] password) {
     requireNonNull(username, "Username is required.");
@@ -41,11 +41,11 @@ public class Authentication
   }
 
   /**
-   * Both <tt>username</tt> and <tt>password</tt> are required.
+   * Both {@code username} and {@code password} are required.
    *
    * @param username the username.
    * @param password the password.
-   * @throws NullPointerException if either <tt>username</tt> or <tt>password</tt> not provided.
+   * @throws NullPointerException if either {@code username} or {@code password} not provided.
    */
   public Authentication(final String username, final String password) {
     requireNonNull(username, "Username is required.");
