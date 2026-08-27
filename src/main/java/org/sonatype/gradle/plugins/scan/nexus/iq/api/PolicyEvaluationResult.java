@@ -18,14 +18,29 @@ public class PolicyEvaluationResult
 {
   private static final long serialVersionUID = 8297359987633171422L;
 
+  /**
+   * List of policy alerts from the evaluation.
+   */
   private final List<PolicyAlert> policyAlerts;
 
+  /**
+   * Count of components affected by policy violations.
+   */
   private final int affectedComponentCount;
 
+  /**
+   * Count of components with critical severity violations.
+   */
   private final int criticalComponentCount;
 
+  /**
+   * Count of components with severe violations.
+   */
   private final int severeComponentCount;
 
+  /**
+   * Count of components with moderate violations.
+   */
   private final int moderateComponentCount;
 
   /**
@@ -53,6 +68,9 @@ public class PolicyEvaluationResult
    */
   private final int totalComponentCount;
 
+  /**
+   * Constructs a policy evaluation result with the given counts and alerts.
+   */
   public PolicyEvaluationResult(
       final int affectedComponentCount,
       final int criticalComponentCount,
@@ -77,54 +95,93 @@ public class PolicyEvaluationResult
     this.policyAlerts = Collections.unmodifiableList(policyAlerts);
   }
 
+  /**
+   * Returns the count of affected components.
+   */
   public int getAffectedComponentCount() {
     return affectedComponentCount;
   }
 
+  /**
+   * Returns the count of critical components.
+   */
   public int getCriticalComponentCount() {
     return criticalComponentCount;
   }
 
+  /**
+   * Returns the count of severe components.
+   */
   public int getSevereComponentCount() {
     return severeComponentCount;
   }
 
+  /**
+   * Returns the count of moderate components.
+   */
   public int getModerateComponentCount() {
     return moderateComponentCount;
   }
 
+  /**
+   * Returns the count of critical policy violations.
+   */
   public int getCriticalPolicyViolationCount() {
     return criticalPolicyViolationCount;
   }
 
+  /**
+   * Returns the count of severe policy violations.
+   */
   public int getSeverePolicyViolationCount() {
     return severePolicyViolationCount;
   }
 
+  /**
+   * Returns the count of moderate policy violations.
+   */
   public int getModeratePolicyViolationCount() {
     return moderatePolicyViolationCount;
   }
 
+  /**
+   * Returns the count of legacy violations.
+   */
   public int getLegacyViolationCount() {
     return legacyViolationCount;
   }
 
+  /**
+   * Returns the total component count.
+   */
   public int getTotalComponentCount() {
     return totalComponentCount;
   }
 
+  /**
+   * Returns the list of policy alerts.
+   */
   public List<PolicyAlert> getPolicyAlerts() {
     return policyAlerts;
   }
 
+  /**
+   * Returns whether the result contains failures.
+   */
   public boolean hasFailures() {
     return hasActionOfType(Action.ID_FAIL);
   }
 
+  /**
+   * Returns whether the result contains warnings.
+   */
   public boolean hasWarnings() {
     return hasActionOfType(Action.ID_WARN);
   }
 
+  /**
+   * Returns whether the result contains notifications.
+   */
   public boolean hasNotifications() {
     return hasActionOfType(Action.ID_NOTIFY);
   }

@@ -19,6 +19,9 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.util.GradleVersion;
 
+/**
+ * Main plugin providing dependency scanning tasks.
+ */
 public class ScanPlugin implements Plugin<Project>
 {
   private static final boolean IS_GRADLE_MIN_7_4 =

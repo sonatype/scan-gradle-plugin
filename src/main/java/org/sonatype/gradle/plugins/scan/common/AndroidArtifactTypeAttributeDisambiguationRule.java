@@ -11,6 +11,9 @@ import org.gradle.api.attributes.MultipleCandidatesDetails;
 
 import static org.gradle.api.artifacts.type.ArtifactTypeDefinition.JAR_TYPE;
 
+/**
+ * Disambiguates artifact type attributes for Android projects.
+ */
 public class AndroidArtifactTypeAttributeDisambiguationRule
     implements AttributeDisambiguationRule<String>
 {

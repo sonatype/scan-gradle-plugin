@@ -16,6 +16,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Utility class for creating ASCII art banners.
+ */
 public class BannerUtils
 {
   private static final Logger log = LoggerFactory.getLogger(BannerUtils.class);
@@ -26,6 +29,9 @@ public class BannerUtils
     // Utils class
   }
 
+  /**
+   * Creates and returns the plugin banner string.
+   */
   public static String createBanner() {
     StringBuilder sb = new StringBuilder();
     try (BufferedReader reader = new BufferedReader(

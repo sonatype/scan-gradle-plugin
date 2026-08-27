@@ -17,10 +17,16 @@ import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Builder for OSS Index client configuration.
+ */
 public class OssIndexClientConfigurationBuilder
 {
   private final Logger log = LoggerFactory.getLogger(OssIndexClientConfigurationBuilder.class);
 
+  /**
+   * Builds an OSS Index client configuration from the given extension settings.
+   */
   public OssindexClientConfiguration build(OssIndexPluginExtension extension) {
     OssindexClientConfiguration clientConfiguration = new OssindexClientConfiguration();
 

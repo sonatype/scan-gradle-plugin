@@ -15,6 +15,9 @@ import org.sonatype.ossindex.service.client.internal.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Utility methods for plugin version information.
+ */
 public class PluginVersionUtils
 {
   private static final Logger log = LoggerFactory.getLogger(PluginVersionUtils.class);
@@ -25,6 +28,9 @@ public class PluginVersionUtils
     // Utils class
   }
 
+  /**
+   * Returns the current plugin version.
+   */
   public static String getPluginVersion() {
     String pluginVersion = Version.UNKNOWN;
     try (InputStream stream = PluginVersionUtils.class.getClassLoader().getResourceAsStream(PROPERTIES_PATH)) {

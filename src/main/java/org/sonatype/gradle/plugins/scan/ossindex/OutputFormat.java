@@ -6,9 +6,15 @@
  */
 package org.sonatype.gradle.plugins.scan.ossindex;
 
+/**
+ * Output format options for OSS Index vulnerability reports.
+ */
 public enum OutputFormat
 {
+  /** Plain text output format. */
   DEFAULT,
+  /** Dependency tree output format. */
   DEPENDENCY_GRAPH,
+  /** CycloneDX JSON SBOM output format. */
   JSON_CYCLONE_DX_1_4
 }

@@ -17,6 +17,9 @@ import org.sonatype.gradle.plugins.scan.nexus.iq.api.PolicyAlert;
  */
 public class PolicyActionResolver
 {
+  /**
+   * Resolves the aggregate policy action from the given list of policy alerts.
+   */
   public PolicyAction resolve(List<PolicyAlert> alerts) {
     PolicyAction outcome = PolicyAction.NONE;
     for (PolicyAlert alert : alerts) {

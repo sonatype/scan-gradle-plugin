@@ -58,6 +58,9 @@ public class DefaultIqClient
 
   static final String MAX_CDX_SUPPORTED_VERSION_PRE_1_7 = "1.6";
 
+  /**
+   * Constructs a new DefaultIqClient with the specified dependencies and configuration.
+   */
   public DefaultIqClient(
       final ConfigurationClient configurationClient,
       final ScannerFactory scannerFactory,

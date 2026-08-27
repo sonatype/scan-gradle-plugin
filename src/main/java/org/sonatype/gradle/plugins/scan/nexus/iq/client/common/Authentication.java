@@ -21,8 +21,14 @@ public class Authentication
   @Serial
   private static final long serialVersionUID = 1L;
 
+  /**
+   * The username for authentication.
+   */
   private final String username;
 
+  /**
+   * The password for authentication.
+   */
   private final char[] password;
 
   /**

@@ -40,6 +40,9 @@ public class PolicyEvaluator
 
   private final ReportClientFactory reportClientFactory;
 
+  /**
+   * Constructs a new PolicyEvaluator with the specified REST client and report client factory.
+   */
   public PolicyEvaluator(
       final RestClient restClient,
       final ReportClientFactory reportClientFactory)
@@ -48,6 +51,9 @@ public class PolicyEvaluator
     this.reportClientFactory = reportClientFactory;
   }
 
+  /**
+   * Evaluates the application policy and returns the evaluation result.
+   */
   public ApplicationPolicyEvaluation evaluateApplication(
       final ClientScanResult clientScanResult,
       final String appId,
@@ -57,6 +63,9 @@ public class PolicyEvaluator
     return evaluateApplication(clientScanResult, appId, clientScanType, stageId, null);
   }
 
+  /**
+   * Evaluates the application policy and writes results to the specified file if provided.
+   */
   public ApplicationPolicyEvaluation evaluateApplication(
       final ClientScanResult clientScanResult,
       final String appId,
@@ -117,6 +126,9 @@ public class PolicyEvaluator
     return reportClient.linkToReport();
   }
 
+  /**
+   * Returns the link to the priorities report if the required license features are enabled.
+   */
   public String getPrioritiesLink(final String applicationId, final String scanId) {
     boolean isDevelopmentDashboardEnabled = false;
     boolean isPrioritizedFindingsReportEnabled = false;

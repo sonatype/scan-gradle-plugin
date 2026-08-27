@@ -22,23 +22,41 @@ public class ProprietaryConfig
 {
   private static final long serialVersionUID = -7657413812830158270L;
 
+  /**
+   * List of package names considered proprietary.
+   */
   private final List<String> packages;
 
+  /**
+   * List of regular expressions for proprietary components.
+   */
   private final List<String> regexes;
 
+  /**
+   * Constructs a proprietary config with the given packages and regexes.
+   */
   public ProprietaryConfig(final List<String> packages, final List<String> regexes) {
     this.packages = Collections.unmodifiableList(packages);
     this.regexes = Collections.unmodifiableList(regexes);
   }
 
+  /**
+   * Returns the list of proprietary packages.
+   */
   public List<String> getPackages() {
     return packages;
   }
 
+  /**
+   * Returns the list of proprietary regexes.
+   */
   public List<String> getRegexes() {
     return regexes;
   }
 
+  /**
+   * Converts this config to a Properties object.
+   */
   public Properties toProperties() {
     Properties properties = new Properties();
     properties.put("proprietaryPackages", String.join(",", packages));

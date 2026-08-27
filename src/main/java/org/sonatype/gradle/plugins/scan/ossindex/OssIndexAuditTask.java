@@ -46,6 +46,9 @@ import org.gradle.internal.impldep.com.google.common.annotations.VisibleForTesti
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Gradle task for auditing dependencies using OSS Index.
+ */
 public class OssIndexAuditTask
     extends DefaultTask
 {
@@ -55,11 +58,17 @@ public class OssIndexAuditTask
 
   private final DependenciesFinder dependenciesFinder;
 
+  /**
+   * Constructs a new OssIndexAuditTask.
+   */
   public OssIndexAuditTask() {
     extension = getProject().getExtensions().getByType(OssIndexPluginExtension.class);
     dependenciesFinder = new DependenciesFinder();
   }
 
+  /**
+   * Executes the dependency audit.
+   */
   @TaskAction
   public void audit() {
     boolean hasVulnerabilities;
@@ -205,69 +214,108 @@ public class OssIndexAuditTask
     }
   }
 
+  /**
+   * Returns the username for authentication.
+   */
   @Input
   public String getUsername() {
     return extension.getUsername();
   }
 
+  /**
+   * Returns the password for authentication.
+   */
   @Input
   public String getPassword() {
     return extension.getPassword();
   }
 
+  /**
+   * Returns whether caching is enabled.
+   */
   @Input
   public boolean isUseCache() {
     return extension.isUseCache();
   }
 
+  /**
+   * Returns the cache directory path.
+   */
   @Input
   public String getCacheDirectory() {
     return extension.getCacheDirectory();
   }
 
+  /**
+   * Returns the cache expiration time.
+   */
   @Input
   public String getCacheExpiration() {
     return extension.getCacheExpiration();
   }
 
+  /**
+   * Returns whether all configurations should be audited.
+   */
   @Input
   public boolean isAllConfigurations() {
     return extension.isAllConfigurations();
   }
 
+  /**
+   * Returns whether color output is enabled.
+   */
   @Input
   public boolean isColorEnabled() {
     return extension.isColorEnabled();
   }
 
+  /**
+   * Returns whether all dependencies should be shown.
+   */
   @Input
   public boolean isShowAll() {
     return extension.isShowAll();
   }
 
+  /**
+   * Returns whether the banner should be printed.
+   */
   @Input
   public boolean isPrintBanner() {
     return extension.isPrintBanner();
   }
 
+  /**
+   * Returns the set of included modules.
+   */
   @Input
   @Optional
   public Set<String> getModulesIncluded() {
     return extension.getModulesIncluded();
   }
 
+  /**
+   * Returns the set of excluded modules.
+   */
   @Input
   @Optional
   public Set<String> getModulesExcluded() {
     return extension.getModulesExcluded();
   }
 
+  /**
+   * Returns the output format.
+   */
   @Input
   @Optional
   public OutputFormat getOutputFormat() {
     return extension.getOutputFormat();
   }
 
+  /**
+   * Returns the CycloneDX component type.
+   */
   @Input
   @Optional
   public Component.Type getCycloneDxComponentType() {

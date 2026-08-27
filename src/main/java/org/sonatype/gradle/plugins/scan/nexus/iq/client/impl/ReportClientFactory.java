@@ -16,10 +16,16 @@ public class ReportClientFactory
 {
   private final Configuration configuration;
 
+  /**
+   * Constructs a new ReportClientFactory with the specified HTTP configuration.
+   */
   public ReportClientFactory(Configuration configuration) {
     this.configuration = configuration;
   }
 
+  /**
+   * Creates a ReportClient for the specified application and scan.
+   */
   public ReportClient get(final String applicationId, final String scanId) {
     return new ReportClient(configuration, applicationId, scanId);
   }

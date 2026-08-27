@@ -28,9 +28,15 @@ import org.slf4j.LoggerFactory;
 
 import static org.sonatype.gradle.plugins.scan.nexus.iq.scan.NexusIqPluginScanExtension.SONATYPE_CLM_FOLDER;
 
+/**
+ * Task for saving module information to module.xml files.
+ */
 public class NexusIqIndexTask
     extends DefaultTask
 {
+  /**
+   * The name of the module XML file.
+   */
   public static final String MODULE_XML_FILE = "module.xml";
 
   private final Logger log = LoggerFactory.getLogger(NexusIqIndexTask.class);
@@ -41,12 +47,18 @@ public class NexusIqIndexTask
 
   private ModuleIoManager moduleIoManager;
 
+  /**
+   * Constructs a NexusIqIndexTask.
+   */
   public NexusIqIndexTask() {
     extension = getProject().getExtensions().getByType(NexusIqPluginIndexExtension.class);
     dependenciesFinder = new DependenciesFinder();
     moduleIoManager = new ModuleIoManager(log);
   }
 
+  /**
+   * Saves module information to module.xml files.
+   */
   @TaskAction
   public void saveModule() {
     try {
@@ -77,11 +89,17 @@ public class NexusIqIndexTask
     this.moduleIoManager = moduleIoManager;
   }
 
+  /**
+   * Returns whether all configurations should be included.
+   */
   @Input
   public boolean isAllConfigurations() {
     return extension.isAllConfigurations();
   }
 
+  /**
+   * Returns the set of excluded module names.
+   */
   @Input
   public Set<String> getModulesExcluded() {
     return extension.getModulesExcluded();

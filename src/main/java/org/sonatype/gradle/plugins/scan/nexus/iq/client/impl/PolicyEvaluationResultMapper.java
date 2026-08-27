@@ -29,6 +29,9 @@ public final class PolicyEvaluationResultMapper
   private PolicyEvaluationResultMapper() {
   }
 
+  /**
+   * Maps a policy evaluation result from the IQ DTO model to the plugin's API model.
+   */
   public static PolicyEvaluationResult map(final com.sonatype.clm.dto.model.policy.PolicyEvaluationResult input) {
     List<PolicyAlert> alerts = input.getAlerts().stream().map(PolicyEvaluationResultMapper::map)
         .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));

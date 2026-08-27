@@ -11,11 +11,17 @@ import javax.inject.Inject;
 import org.gradle.api.attributes.AttributeDisambiguationRule;
 import org.gradle.api.attributes.MultipleCandidatesDetails;
 
+/**
+ * Disambiguates variant attributes based on a configured value.
+ */
 public class VariantAttributeDisambiguationRule
     implements AttributeDisambiguationRule<String>
 {
   private final String variantValue;
 
+  /**
+   * Constructs a rule with the specified variant value.
+   */
   @Inject
   public VariantAttributeDisambiguationRule(String variantValue) {
     this.variantValue = variantValue;

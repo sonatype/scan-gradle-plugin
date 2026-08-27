@@ -54,6 +54,9 @@ public class Scanner
 
   private final Logger log;
 
+  /**
+   * Constructs a new Scanner without a logger.
+   */
   public Scanner(
       final ScanPropertiesLoader scanPropertiesLoader,
       final ClientScanner clientScanner,
@@ -63,6 +66,9 @@ public class Scanner
     this(scanPropertiesLoader, clientScanner, fileScanner, scanWriterFactory, null);
   }
 
+  /**
+   * Constructs a new Scanner with an optional logger.
+   */
   public Scanner(
       final ScanPropertiesLoader scanPropertiesLoader,
       final ClientScanner clientScanner,
@@ -77,6 +83,9 @@ public class Scanner
     this.log = log;
   }
 
+  /**
+   * Scans the given targets and modules without licensed features.
+   */
   public ScanResult scan(
       final Properties config,
       final List<File> targets,
@@ -88,6 +97,9 @@ public class Scanner
     return scan(config, targets, baseDirectory, instanceId, envVars, modules, null);
   }
 
+  /**
+   * Scans the given targets and modules with optional licensed features.
+   */
   public ScanResult scan(
       final Properties config,
       final List<File> targets,

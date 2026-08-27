@@ -40,6 +40,10 @@ if (JavaVersion.current() != targetCompatibility) {
       "The java version used ${JavaVersion.current()} is not the expected version ${project.targetCompatibility}.")
 }
 
+tasks.withType(Javadoc).configureEach {
+  options.addStringOption('Xdoclint:all,-missing', '-quiet')
+}
+
 jar {
   manifest {
     attributes(
@@ -83,7 +87,16 @@ dependencies {
 
   // Transitive dependency pinning
   constraints {
-    implementation('com.fasterxml.woodstox:woodstox-core:7.2.2') {
+    implementation('com.fasterxml.woodstox:woodstox-core') {
+      version {
+        strictly('7.2.2')
+      }
+      because('Pinning version to avoid license selection issues')
+    }
+    implementation('javax.xml.bind:jaxb-api') {
+      version {
+        strictly('2.3.0')
+      }
       because('Pinning version to avoid license selection issues')
     }
     implementation('org.jsoup:jsoup:1.23.2') {

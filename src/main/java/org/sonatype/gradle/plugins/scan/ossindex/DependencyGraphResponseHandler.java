@@ -24,6 +24,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
 import org.gradle.api.artifacts.ResolvedDependency;
 
+/**
+ * Response handler that outputs vulnerability information in a dependency tree format.
+ */
 public class DependencyGraphResponseHandler
     implements OssIndexResponseHandler
 {
@@ -33,6 +36,9 @@ public class DependencyGraphResponseHandler
 
   private  final OssIndexPluginExtension extension;
 
+  /**
+   * Constructs a handler with the given extension configuration.
+   */
   public DependencyGraphResponseHandler(OssIndexPluginExtension extension) {
     this.extension = extension;
   }

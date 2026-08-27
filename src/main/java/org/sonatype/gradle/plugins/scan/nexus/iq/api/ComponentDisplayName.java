@@ -18,8 +18,14 @@ public class ComponentDisplayName
 {
   private static final long serialVersionUID = -7005158197393657122L;
 
+  /**
+   * The list of parts that make up the display name.
+   */
   public final List<ComponentDisplayNamePart> parts;
 
+  /**
+   * Creates a new ComponentDisplayName with the given parts.
+   */
   public ComponentDisplayName(final List<ComponentDisplayNamePart> parts) {
     this.parts = Collections.unmodifiableList(parts);
   }

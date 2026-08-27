@@ -18,14 +18,29 @@ public class PolicyFact
 {
   private static final long serialVersionUID = 7109576543471007652L;
 
+  /**
+   * The policy ID.
+   */
   private final String policyId;
 
+  /**
+   * The policy name.
+   */
   private final String policyName;
 
+  /**
+   * The threat level.
+   */
   private final int threatLevel;
 
+  /**
+   * The component facts.
+   */
   private final List<ComponentFact> componentFacts;
 
+  /**
+   * Constructs a PolicyFact.
+   */
   public PolicyFact(
       final String policyId,
       final String policyName,
@@ -38,18 +53,30 @@ public class PolicyFact
     this.componentFacts = Collections.unmodifiableList(componentFacts);
   }
 
+  /**
+   * Returns the policy ID.
+   */
   public String getPolicyId() {
     return policyId;
   }
 
+  /**
+   * Returns the policy name.
+   */
   public String getPolicyName() {
     return policyName;
   }
 
+  /**
+   * Returns the threat level.
+   */
   public int getThreatLevel() {
     return threatLevel;
   }
 
+  /**
+   * Returns the component facts.
+   */
   public List<ComponentFact> getComponentFacts() {
     return componentFacts;
   }

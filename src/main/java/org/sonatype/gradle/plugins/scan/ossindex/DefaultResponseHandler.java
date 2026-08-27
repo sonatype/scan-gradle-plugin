@@ -21,11 +21,17 @@ import org.sonatype.ossindex.service.api.componentreport.ComponentReportVulnerab
 import org.apache.commons.lang3.StringUtils;
 import org.gradle.api.artifacts.ResolvedDependency;
 
+/**
+ * Default response handler that logs vulnerability information in plain text format.
+ */
 public class DefaultResponseHandler
     implements OssIndexResponseHandler
 {
   private final OssIndexPluginExtension extension;
 
+  /**
+   * Constructs a handler with the given extension configuration.
+   */
   public DefaultResponseHandler(OssIndexPluginExtension extension) {
     this.extension = extension;
   }

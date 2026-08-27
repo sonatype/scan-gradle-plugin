@@ -16,8 +16,14 @@ import org.sonatype.ossindex.service.client.transport.UserAgentSupplier;
 import org.gradle.api.Project;
 import org.gradle.internal.impldep.com.google.common.annotations.VisibleForTesting;
 
+/**
+ * Builder for HTTP transport used by OSS Index client.
+ */
 public class TransportBuilder
 {
+  /**
+   * Builds an HTTP transport configured with the appropriate user agent.
+   */
   public HttpClientTransport build(Project project) {
     UserAgentSupplier userAgentSupplier = buildUserAgentSupplier(project);
     return new HttpClientTransport(userAgentSupplier);

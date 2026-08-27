@@ -18,19 +18,34 @@ public class PolicyAlert
 {
   private static final long serialVersionUID = 3296155389738750550L;
 
+  /**
+   * The trigger policy fact.
+   */
   private final PolicyFact trigger;
 
+  /**
+   * The actions associated with this policy alert.
+   */
   private final List<? extends Action> actions;
 
+  /**
+   * Constructs a PolicyAlert.
+   */
   public PolicyAlert(final PolicyFact trigger, final List<? extends Action> actions) {
     this.trigger = trigger;
     this.actions = Collections.unmodifiableList(actions);
   }
 
+  /**
+   * Returns the trigger policy fact.
+   */
   public PolicyFact getTrigger() {
     return trigger;
   }
 
+  /**
+   * Returns the actions associated with this policy alert.
+   */
   public List<? extends Action> getActions() {
     return actions;
   }

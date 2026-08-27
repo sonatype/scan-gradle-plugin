@@ -18,16 +18,34 @@ public class ComponentFact
 {
   private static final long serialVersionUID = -9042385304532875926L;
 
+  /**
+   * The component identifier.
+   */
   private final ComponentIdentifier componentIdentifier;
 
+  /**
+   * The component hash.
+   */
   private final String hash;
 
+  /**
+   * The list of constraint facts.
+   */
   private final List<ConstraintFact> constraintFacts;
 
+  /**
+   * The list of path names.
+   */
   private final List<String> pathNames;
 
+  /**
+   * The display name.
+   */
   private final ComponentDisplayName displayName;
 
+  /**
+   * Creates a new ComponentFact with the given parameters.
+   */
   public ComponentFact(
       final ComponentIdentifier componentIdentifier,
       final String hash,
@@ -42,22 +60,37 @@ public class ComponentFact
     this.displayName = displayName;
   }
 
+  /**
+   * Returns the hash.
+   */
   public String getHash() {
     return hash;
   }
 
+  /**
+   * Returns the constraint facts.
+   */
   public List<ConstraintFact> getConstraintFacts() {
     return constraintFacts;
   }
 
+  /**
+   * Returns the path names.
+   */
   public List<String> getPathNames() {
     return pathNames;
   }
 
+  /**
+   * Returns the display name.
+   */
   public ComponentDisplayName getDisplayName() {
     return displayName;
   }
 
+  /**
+   * Returns the component identifier.
+   */
   public ComponentIdentifier getComponentIdentifier() {
     return componentIdentifier;
   }

@@ -24,6 +24,9 @@ public class ScanResult
 
   private final File scanFile;
 
+  /**
+   * Constructs a ScanResult from a scan object and its serialized file.
+   */
   public ScanResult(final Object scan, final File scanFile) {
     // since IQ 130 the 'xstream' relocation breaks the IQ functional tests; this is a workaround for that issue.
     // A more permanent fix could be bringing all ITs into the main module (i.e. api),
@@ -34,10 +37,16 @@ public class ScanResult
     this.scanFile = scanFile;
   }
 
+  /**
+   * Returns the scan model, which may be null if deserialization failed.
+   */
   public Scan getScan() {
     return scan;
   }
 
+  /**
+   * Returns the file containing the serialized scan data.
+   */
   public File getScanFile() {
     return scanFile;
   }

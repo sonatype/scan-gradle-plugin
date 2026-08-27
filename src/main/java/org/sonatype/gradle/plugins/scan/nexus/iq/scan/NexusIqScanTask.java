@@ -46,6 +46,9 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.stream;
 
+/**
+ * Gradle task for scanning and evaluating dependencies against Nexus IQ Server policies.
+ */
 public class NexusIqScanTask
     extends DefaultTask
 {
@@ -59,11 +62,17 @@ public class NexusIqScanTask
 
   private DependenciesFinder dependenciesFinder;
 
+  /**
+   * Constructs a new NexusIqScanTask.
+   */
   public NexusIqScanTask() {
     extension = getProject().getExtensions().getByType(NexusIqPluginScanExtension.class);
     dependenciesFinder = new DependenciesFinder();
   }
 
+  /**
+   * Executes the scan against Nexus IQ Server.
+   */
   @TaskAction
   public void scan() {
     try {
@@ -225,56 +234,89 @@ public class NexusIqScanTask
         getProject().getGradle().getGradleVersion());
   }
 
+  /**
+   * Returns the scan folder path.
+   */
   @Input
   public String getScanFolderPath() {
     return extension.getScanFolderPath();
   }
 
+  /**
+   * Returns the username for authentication.
+   */
   @Input
   public String getUsername() {
     return extension.getUsername();
   }
 
+  /**
+   * Returns the password for authentication.
+   */
   @Input
   public String getPassword() {
     return extension.getPassword();
   }
 
+  /**
+   * Returns the application ID.
+   */
   @Input
   public String getApplicationId() {
     return extension.getApplicationId();
   }
 
+  /**
+   * Returns the organization ID.
+   */
   @Input
   public String getOrganizationId() {
     return extension.getOrganizationId();
   }
 
+  /**
+   * Returns the server URL.
+   */
   @Input
   public String getServerUrl() {
     return extension.getServerUrl();
   }
 
+  /**
+   * Returns the stage.
+   */
   @Input
   public String getStage() {
     return extension.getStage();
   }
 
+  /**
+   * Returns whether all configurations should be scanned.
+   */
   @Input
   public boolean isAllConfigurations() {
     return extension.isAllConfigurations();
   }
 
+  /**
+   * Returns the set of excluded modules.
+   */
   @Input
   public Set<String> getModulesExcluded() {
     return extension.getModulesExcluded();
   }
 
+  /**
+   * Returns the directory include patterns.
+   */
   @Input
   public String getDirIncludes() {
     return extension.getDirIncludes();
   }
 
+  /**
+   * Returns the directory exclude patterns.
+   */
   @Input
   public String getDirExcludes() {
     return extension.getDirExcludes();

@@ -28,6 +28,9 @@ public class ScannerFactory
 {
   private final Map<Optional<Logger>, Scanner> scanners = new ConcurrentHashMap<>();
 
+  /**
+   * Returns a Scanner instance, memoized by logger presence.
+   */
   public Scanner getScanner(final Optional<Logger> logger) {
     return scanners.computeIfAbsent(logger, ScannerFactory::memoizeScanner);
   }

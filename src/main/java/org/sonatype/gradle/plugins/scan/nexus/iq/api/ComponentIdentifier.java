@@ -18,19 +18,34 @@ public class ComponentIdentifier
 {
   private static final long serialVersionUID = -2228730540775558696L;
 
+  /**
+   * The component format.
+   */
   private final String format;
 
+  /**
+   * The component coordinates.
+   */
   private final SortedMap<String, String> coordinates;
 
+  /**
+   * Creates a new ComponentIdentifier with the given format and coordinates.
+   */
   public ComponentIdentifier(final String format, final SortedMap<String, String> coordinates) {
     this.format = format;
     this.coordinates = Collections.unmodifiableSortedMap(coordinates);
   }
 
+  /**
+   * Returns the format.
+   */
   public String getFormat() {
     return format;
   }
 
+  /**
+   * Returns the coordinates.
+   */
   public SortedMap<String, String> getCoordinates() {
     return coordinates;
   }

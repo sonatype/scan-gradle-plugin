@@ -16,10 +16,19 @@ public class ComponentDisplayNamePart
 {
   private static final long serialVersionUID = 4543461576396548761L;
 
+  /**
+   * The field name.
+   */
   public final String field;
 
+  /**
+   * The field value.
+   */
   public final String value;
 
+  /**
+   * Creates a new ComponentDisplayNamePart with the given field and value.
+   */
   public ComponentDisplayNamePart(final String field, final String value) {
     this.field = field;
     this.value = value;
