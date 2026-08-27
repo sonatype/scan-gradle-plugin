@@ -1,0 +1,58 @@
+name: Release Gradle Plugin (CI)
+
+on:
+  workflow_dispatch:
+#  push:
+#    branches:
+#      - INT-10581-set-up-CI-builds-2
+
+jobs:
+  gradle-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Build and Publish to Plugin Portal
+        run: ./gradlew clean publish copyDependencies -x integrationTest -Dorg.gradle.daemon=false --info -PisReleaseJob
+        env:
+          NEXUS_RM_USERNAME: ${{ secrets.NEXUS_RM_USERNAME }}
+          NEXUS_RM_PASSWORD: ${{ secrets.NEXUS_RM_PASSWORD }}
+          GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+          GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
+
+      - name: Cleanup Unwanted Artifacts
+        run: |
+          echo "Removing unwanted scanPluginMarkerMaven artifacts"
+          rm -rf build/publications/scanPluginMarkerMaven
+
+      - name: Publish to Maven Central
+        run: ./gradlew jreleaserFullRelease -Dorg.gradle.daemon=false --info -x test -x integrationTest
+        env:
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JRELEASER_GPG_PUBLIC_KEY: ${{ vars.GPG_PUBLIC_KEY }}
+          JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+          JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.JRELEASER_MAVENCENTRAL_USERNAME }}
+          JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.JRELEASER_MAVENCENTRAL_PASSWORD }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: scan-gradle-plugin
+          compression-level: 1 # best speed
+          path: |
+            build/libs/scan-gradle-plugin-*-SNAPSHOT.jar
+            build/libs/scan-gradle-plugin-*-SNAPSHOT-main.jar
+            build/dependencies/*.jar
+            build/test-results/*/*.xml

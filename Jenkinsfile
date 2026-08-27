@@ -10,18 +10,6 @@ Map<String, ?> pipelineCommon = pipelineCommon retentionPolicy: RetentionPolicy.
 
 String deployBranch = 'main'
 
-Closure policyEvaluation = { stage ->
-  nexusPolicyEvaluation(
-    unstableBuildOnScanningWarnings: false,
-    iqStage: stage,
-    iqApplication: 'scan-gradle-plugin',
-    iqScanPatterns: [
-      [scanPattern: 'build/dependencies/*.jar']
-    ],
-    failBuildOnNetworkError: true
-  )
-}
-
 pipeline {
   agent { label pipelineCommon.agentLabel }
   options {
@@ -35,71 +23,81 @@ pipeline {
     )
     timestamps()
   }
+  parameters {
+    booleanParam(
+        name: 'runIntegrationTests',
+        defaultValue: true,
+        description: 'If checked it includes all integration tests; otherwise only unit tests will run.'
+    )
+  }
   stages {
-    stage('Preparation') {
+    stage('Prepare') {
       steps {
+        script {
+          env.BRANCH_NAME = env.BRANCH_NAME ?: 'main'
+          // Load this repo's own vars/ from the branch being built, not the library's
+          // default version, so Jenkinsfile changes and vars/*.groovy changes stay in sync.
+          library "scan-gradle-plugin@${env.BRANCH_NAME}"
+        }
         githubStatusUpdate('pending')
-      }
-    }
-    stage('License Check') {
-      steps {
-        licenseCheck()
       }
     }
     stage('Build and Test') {
       steps {
-        gradleExec("build copyDependencies integrationTest")
-        collectTestResults(['**/test-results/*.xml'])
+        runBuildWorkflow(env.BRANCH_NAME, params.runIntegrationTests)
+        collectTestResults(params.runIntegrationTests
+            ? ['target/test-results/test/*.xml', 'target/it*/*.xml']
+            : ['target/test-results/test/*.xml'])
+      }
+    }
+    stage('Policy Evaluation') {
+      steps {
+        nexusPolicyEvaluation(
+          unstableBuildOnScanningWarnings: false,
+          iqStage: env.BRANCH_NAME == 'main' ? 'build': 'develop',
+          iqApplication: 'scan-gradle-plugin',
+          iqScanPatterns: [
+            [scanPattern: 'target/dependencies/*.jar'],
+            [scanPattern: 'target/libs/scan-gradle-plugin-*-main.jar']
+          ],
+          failBuildOnNetworkError: true,
+          reachability: [
+            javaAnalysis: [
+              enable: true,
+              includes: [
+                [pattern: 'target/dependencies/*.jar'],
+                [pattern: 'target/libs/scan-gradle-plugin-*-SNAPSHOT-main.jar']
+              ],
+              namespaces: [
+                [namespace: 'org.sonatype.gradle.plugins.scan']
+              ]
+            ]
+          ]
+        )
       }
     }
     stage('Collect Distribution Files') {
       steps {
-        collectDist([includes: ['build/libs/scan-gradle-plugin-*-SNAPSHOT.jar']])
-      }
-    }
-    stage('Evaluate Policies') {
-      steps {
-        vulnerabilityScan(policyEvaluation, isDeployBranch(env, deployBranch) ? 'build' : 'develop')
-      }
-    }
-    stage('Upload Artifacts') {
-      when {
-        expression { return isDeployBranch(env, deployBranch) }
-      }
-      steps {
-        gradleExec("publish")
+        collectDist([includes: [
+            'target/libs/*-SNAPSHOT.jar'
+        ]])
       }
     }
   }
   post {
+    always {
+      script {
+        if (env.BRANCH_NAME == 'main') {
+          buildNotifications(currentBuild, env)
+        }
+        deleteDir()
+      }
+    }
     success {
       githubStatusUpdate('success')
     }
     failure {
       githubStatusUpdate('failure')
-    }
-    always {
-      postHandler({ build, env -> buildNotifications(build, env) }, currentBuild, env)
-    }
-    cleanup() {
-      dockerRemoveImages()
-      deleteDir()
-    }
-  }
-}
-
-String BUILD_IMAGE_ID() { return "${sonatypeDockerRegistryId()}/integrations/gradle-build-pipeline" }
-
-def gradleExec(String cmd) {
-  dockerPrepareBuildImage(BUILD_IMAGE_ID(), true)
-  withCredentials([[$class: 'ZipFileBinding', credentialsId: 'gnupg', variable: 'gpgZip']]) {
-    withDockerImage(BUILD_IMAGE_ID(), 'rsc-ro-npmrc', '-v $gpgZip/gnupg:/home/jenkins/.gnupg') {
-      configFileProvider(
-        [configFile(fileId: 'external-gpg-init.gradle', variable: 'initGradlePath')]) {
-        sh 'chmod 700 /home/jenkins/.gnupg'
-        sh 'chmod 600 /home/jenkins/.gnupg/*'
-        sh "./gradlew --init-script $initGradlePath --stacktrace --console=plain --no-daemon --info ${cmd}"
-      }
     }
   }
 }

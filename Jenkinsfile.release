@@ -1,0 +1,126 @@
+/*
+ * Copyright (c) 2016-present Sonatype, Inc. All rights reserved.
+ *
+ * Includes the third-party code listed at https://links.sonatype.com/products/clm/attributions.
+ * "Sonatype" is a trademark of Sonatype, Inc.
+ */
+@Library(['scan-gradle-plugin', 'private-pipeline-library', 'jenkins-shared', 'int-jenkins-shared']) _
+
+Map<String, ?> pipelineCommon = pipelineCommon retentionPolicy: RetentionPolicy.TEN_BUILDS
+
+def jira = [
+    versionPrefix: 'gradle', project: 'INT', projectId: '10007',
+    credentialId : 'atlassian-jenkins-svc', autoRelease: true, failOnError: true
+]
+
+pipeline {
+  agent { label pipelineCommon.agentLabel }
+  options {
+    buildDiscarder(
+        logRotator(
+            numToKeepStr: pipelineCommon.NUM_TO_KEEP_STR,
+            daysToKeepStr: pipelineCommon.DAYS_TO_KEEP_STR,
+            artifactNumToKeepStr: pipelineCommon.ARTIFACT_NUM_TO_KEEP_STR,
+            artifactDaysToKeepStr: pipelineCommon.ARTIFACT_DAYS_TO_KEEP_STR
+        )
+    )
+    timestamps()
+  }
+  parameters {
+    validatingString(
+        name: 'version',
+        defaultValue: '',
+        regex: /^\d+\.\d+\.\d+-\d+$/,
+        failedValidationMessage: 'Required version format: major.minor.patch-build',
+        description: 'The version to release, e.g. 2.0.3-01'
+    )
+    validatingString(
+        name: 'nextVersion',
+        defaultValue: '-SNAPSHOT',
+        regex: /^\d+\.\d+\.\d+-SNAPSHOT$/,
+        failedValidationMessage: 'Required version format: major.minor.patch-SNAPSHOT',
+        description: 'The next SNAPSHOT version to use after the release, e.g. 2.0.4-SNAPSHOT'
+    )
+  }
+  stages {
+    stage('Prepare Release') {
+      steps {
+        updateVersion(params.version)
+        setBuildDisplayName Version: params.version
+        withSonatypeZionSsh() {
+          runSafely """
+              git add gradle.properties
+              git commit -m 'Release: ${params.version}'
+              git tag -a release-${params.version} -m 'Release: ${params.version}'"
+              git pull --no-rebase --no-edit origin main
+              git push --no-verify origin main
+          """
+        }
+      }
+    }
+    stage('Build and Test') {
+      steps {
+        runReleaseWorkflow()
+        collectTestResults(['target/test-results/test/*.xml'])
+      }
+    }
+    stage('Policy Evaluation') {
+      steps {
+        nexusPolicyEvaluation(
+          unstableBuildOnScanningWarnings: false,
+          iqStage: 'release',
+          iqApplication: 'scan-gradle-plugin',
+          iqScanPatterns: [
+            [scanPattern: 'target/dependencies/*.jar'],
+            [scanPattern: 'target/libs/scan-gradle-plugin-*-main.jar']
+          ],
+          failBuildOnNetworkError: true
+        )
+      }
+    }
+    stage('Collect Distribution Files') {
+      steps {
+        collectDist([includes: [
+            'target/libs/*.jar'
+        ]])
+      }
+    }
+    stage('Finish Release') {
+      steps {
+        jiraSetFixVersion(jira, params.version)
+        // FIXME uncomment after the corresponding topic was created in Paligo
+        // updateDownloadAndCompatibilityPage(params.version)
+
+        createReleaseFromTag("release-${params.version}")
+        updateVersion(params.nextVersion)
+        withSonatypeZionSsh() {
+          runSafely """
+              git add gradle.properties
+              git commit -m 'update to next version: ${params.nextVersion}'
+              git pull --no-rebase --no-edit origin main
+              git push --no-verify origin main
+          """
+        }
+      }
+    }
+  }
+  post {
+    always {
+      script {
+        buildNotifications(currentBuild, env)
+        deleteDir()
+      }
+    }
+  }
+}
+
+def updateDownloadAndCompatibilityPage(releaseVersion) {
+  // Paligo: update plugin's version in the download and compatibility page
+  // https://sonatype.atlassian.net/wiki/spaces/HELP/pages/270172330/Automation+with+Paligo#Eclipse-Plugin-Version
+  // FIXME update contentId after the corresponding topic was created in Paligo
+  updatePaligoContent contentId: '0000', updates: [
+      [
+          pattern:     /<para[^>]*>.+<\/para>/,
+          replacement: /<para>${releaseVersion}<\/para>/
+      ]]
+}
