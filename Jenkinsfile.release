@@ -88,8 +88,7 @@ pipeline {
     stage('Finish Release') {
       steps {
         jiraSetFixVersion(jira, params.version)
-        // FIXME uncomment after the corresponding topic was created in Paligo
-        // updateDownloadAndCompatibilityPage(params.version)
+        updateDownloadAndCompatibilityPage(params.version)
 
         createReleaseFromTag("release-${params.version}")
         updateVersion(params.nextVersion)
@@ -117,10 +116,12 @@ pipeline {
 def updateDownloadAndCompatibilityPage(releaseVersion) {
   // Paligo: update plugin's version in the download and compatibility page
   // https://sonatype.atlassian.net/wiki/spaces/HELP/pages/270172330/Automation+with+Paligo#Eclipse-Plugin-Version
-  // FIXME update contentId after the corresponding topic was created in Paligo
-  updatePaligoContent contentId: '0000', updates: [
+
+  def segments = parseVersionString(releaseVersion)
+  def shortVersion = segments.join('.')
+  updatePaligoContent contentId: '867435', updates: [
       [
           pattern:     /<para[^>]*>.+<\/para>/,
-          replacement: /<para>${releaseVersion}<\/para>/
+          replacement: /<para>${shortVersion}<\/para>/
       ]]
 }
