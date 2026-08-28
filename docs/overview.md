@@ -123,6 +123,8 @@ CI uses a **hybrid model**: Jenkins orchestrates the pipeline while the actual G
 Loading this repository's own `vars/*.groovy` from the branch under build keeps the `Jenkinsfile` and shared-library
 steps in sync.
 
+If you want to run GitHub Actions locally, check out: https://contribute.sonatype.com/docs/how-to/testing-github-actions-locally/.
+
 ## Publishing / Release
 
 Releases are driven by [`Jenkinsfile.release`](../Jenkinsfile.release):
