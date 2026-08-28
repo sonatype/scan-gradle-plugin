@@ -1,9 +1,0 @@
-name: configure-git
-runs:
-  using: composite
-  steps:
-  - name: Configure GIT with user info for pushing
-    run: |-
-      git config user.name "$GITHUB_USERNAME"
-      git config user.email "$GITHUB_EMAIL"
-    shell: bash
