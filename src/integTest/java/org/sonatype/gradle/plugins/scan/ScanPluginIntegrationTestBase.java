@@ -70,7 +70,9 @@ public abstract class ScanPluginIntegrationTestBase
   public void testScanTask_MissingTaskConfiguration_NexusIQ() throws IOException {
     writeFile(buildFile, "missing-scan.gradle");
 
-    String errorMessage = "property '%s' doesn't have a configured value.";
+    // No trailing period: Gradle 9.6 changed the validation renderer to the "Value not set" problem format, which
+    // drops the period that 7.6.x, 8.x and 9.0 append. Matching without it works on every tested version.
+    String errorMessage = "property '%s' doesn't have a configured value";
 
     assertThatThrownBy(() -> GradleRunner.create()
         .withGradleVersion(gradleVersion)
@@ -472,13 +474,7 @@ public abstract class ScanPluginIntegrationTestBase
         .withArguments("ossIndexAudit", "--info")
         .build();
 
-    String resultOutput = result.getOutput();
-    assertThat(resultOutput).contains(String.format(
-        "%scom.android.support:appcompat-v7:24.2.1: 0 vulnerabilities detected%n"
-            + "|    %scom.android.support:animated-vector-drawable:24.2.1: 0 vulnerabilities detected",
-        DEPENDENCY_PREFIX, DEPENDENCY_PREFIX));
-    assertThat(resultOutput).contains(
-        String.format("%scommons-collections:commons-collections:3.1: 0 vulnerabilities detected", DEPENDENCY_PREFIX));
+    assertBuildOutputText_Android_OssIndex(result, "android");
 
     assertThat(result.task(":ossIndexAudit").getOutcome()).isEqualTo(SUCCESS);
   }
@@ -494,13 +490,7 @@ public abstract class ScanPluginIntegrationTestBase
         .withArguments("ossIndexAudit", "--info")
         .build();
 
-    String resultOutput = result.getOutput();
-    assertThat(resultOutput).contains(String.format(
-        "%scom.android.support:appcompat-v7:24.2.1: 0 vulnerabilities detected%n"
-            + "|    %scom.android.support:animated-vector-drawable:24.2.1: 0 vulnerabilities detected",
-        DEPENDENCY_PREFIX, DEPENDENCY_PREFIX));
-    assertThat(resultOutput).contains(
-        String.format("%scommons-collections:commons-collections:3.1: 0 vulnerabilities detected", DEPENDENCY_PREFIX));
+    assertBuildOutputText_Android_OssIndex(result, "android-multiple-flavors");
 
     assertThat(result.task(":ossIndexAudit").getOutcome()).isEqualTo(SUCCESS);
   }
@@ -551,6 +541,32 @@ public abstract class ScanPluginIntegrationTestBase
     assertThat(resultOutput).contains("Number of legacy violations: 0");
     assertThat(resultOutput).contains("The detailed report can be viewed online at simulated/report");
     assertThat(resultOutput).contains("Number of components: 1");
+  }
+
+  /*
+   * AGP 7.x nests the transitive dependencies of appcompat-v7 underneath it, while AGP 8.x and 9.x hoist them to the
+   * top level of the graph. Both are correct resolutions of the same fixture, so this asserts what the plugin is
+   * responsible for -- every direct and transitive component is discovered, reported with its vulnerability count, and
+   * rendered with nesting -- instead of pinning AGP's tree topology, which changes with the AGP version the fixture
+   * selects for the Gradle version under test.
+   */
+  private void assertBuildOutputText_Android_OssIndex(BuildResult result, String rootProjectName) {
+    String resultOutput = result.getOutput();
+
+    // The direct dependency, and the transitive dependencies AGP contributes through the Android variant.
+    assertThat(resultOutput)
+        .contains(DEPENDENCY_PREFIX + "com.android.support:appcompat-v7:24.2.1: 0 vulnerabilities detected")
+        .contains("com.android.support:animated-vector-drawable:24.2.1: 0 vulnerabilities detected")
+        .contains("com.android.support:support-v4:24.2.1: 0 vulnerabilities detected")
+        .contains("com.android.support:support-annotations:24.2.1: 0 vulnerabilities detected")
+        .contains(DEPENDENCY_PREFIX + "commons-collections:commons-collections:3.1: 0 vulnerabilities detected");
+
+    // The project dependency keeps its transitive dependency nested under it in every AGP version under test, so the
+    // graph is still asserted to be a graph rather than a flat list.
+    assertThat(resultOutput).contains(String.format(
+        "%s%s:common-lib:unspecified: 0 vulnerabilities detected%n"
+            + "|    %scommons-collections:commons-collections:3.1: 0 vulnerabilities detected",
+        DEPENDENCY_PREFIX, rootProjectName, DEPENDENCY_PREFIX));
   }
 
   private void assertBuildOutputText_OssIndex_DependencyGraph(BuildResult result, int vulnerabilities) {

@@ -19,8 +19,8 @@ task integrationTest(type: Test) {
 // the entries they cannot read instead of failing. See the Compatibility section in README.md.
 ['**/ScanIT_Gradle_Versions_7_6*.class',
  '**/ScanIT_Gradle_Versions_8_4*.class',
- '**/ScanIT_Gradle_Versions_8_6*.class',
- '**/ScanIT_Gradle_Versions_8_11*.class'].eachWithIndex { className, index ->
+ '**/ScanIT_Gradle_Versions_8_10*.class',
+ '**/ScanIT_Gradle_Versions_9_0*.class'].eachWithIndex { className, index ->
   task "it${index + 1}"(type: Test) {
     includes = [className]
     description = "Runs the integration tests on class $className."

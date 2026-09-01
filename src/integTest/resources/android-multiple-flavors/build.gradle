@@ -8,19 +8,26 @@ buildscript {
   repositories {
     google()
     mavenCentral()
-    jcenter()
   }
 
-  // Mapping between Gradle and Android plugin versions: https://developer.android.com/studio/releases/gradle-plugin
-  def androidGradlePluginVersion = '3.0.0'
-  if (gradle.gradleVersion.compareTo('8.0') >= 0) {
+  // Mapping between Gradle and Android plugin versions:
+  // https://developer.android.com/studio/releases/gradle-plugin
+  // Each rung is a hard compatibility floor/ceiling, not a preference:
+  //  - AGP 7.x calls DependencyHandler.module(Object), which Gradle 9 removed, so Gradle 9 cannot use AGP 7.
+  //  - AGP 8.x uses the internal org.gradle.api.problems.internal.InternalProblems, which Gradle 9.6 removed, so
+  //    Gradle 9.6+ cannot use AGP 8. See https://docs.gradle.org/current/userguide/upgrading_version_9.html
+  //    #agp_8x_incompatible
+  //  - AGP 9.x requires Gradle 9.5 or higher, so it cannot serve Gradle 8.x or Gradle 9.0.
+  // The DSL below (namespace / compileSdk / minSdk / targetSdk) is the syntax AGP 7.4, 8.x and 9.x all accept,
+  // which is why no AGP older than 7.4 can be used here any more.
+  def currentGradleVersion = org.gradle.util.GradleVersion.version(gradle.gradleVersion)
+  def androidGradlePluginVersion
+  if (currentGradleVersion >= org.gradle.util.GradleVersion.version('9.5')) {
+    androidGradlePluginVersion = '9.3.2'
+  } else if (currentGradleVersion >= org.gradle.util.GradleVersion.version('9.0')) {
+    androidGradlePluginVersion = '8.13.2'
+  } else {
     androidGradlePluginVersion = '7.4.0'
-  } else if (gradle.gradleVersion.compareTo('6.1.1') >= 0) {
-    androidGradlePluginVersion = '4.0.0'
-  } else if (gradle.gradleVersion.compareTo('5.6.4') >= 0) {
-    androidGradlePluginVersion = '3.6.4'
-  } else if (gradle.gradleVersion.compareTo('5.0') >= 0) {
-    androidGradlePluginVersion = '3.3.3'
   }
 
   dependencies {
@@ -36,15 +43,13 @@ allprojects {
   repositories {
     google()
     mavenCentral()
-    jcenter()
   }
 }
 
 ext {
-  compileSdkVersion=28
-  minSdkVersion=10
-  targetSdkVersion=28
-  buildToolsVersion='26.0.2'
+  compileSdk=28
+  minSdk=21
+  targetSdk=28
 }
 
 nexusIQScan {
