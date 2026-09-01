@@ -26,6 +26,13 @@ import org.slf4j.Logger;
  */
 public class ScannerFactory
 {
+  static {
+    // TrueZIP (pulled in transitively by insight-scanner-archive) logs its startup banner and driver
+    // discovery via java.util.logging rather than SLF4J, so it bypasses logback.xml. Raise its level
+    // before any archive scanning triggers TrueZIP class loading.
+    java.util.logging.Logger.getLogger("de.schlichtherle.truezip").setLevel(java.util.logging.Level.SEVERE);
+  }
+
   private final Map<Optional<Logger>, Scanner> scanners = new ConcurrentHashMap<>();
 
   /**
