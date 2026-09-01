@@ -23,6 +23,7 @@ import org.gradle.api.GradleException;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.internal.impldep.com.google.common.annotations.VisibleForTesting;
+import org.gradle.work.DisableCachingByDefault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,8 @@ import static org.sonatype.gradle.plugins.scan.nexus.iq.scan.NexusIqPluginScanEx
 /**
  * Task for saving module information to module.xml files.
  */
+@DisableCachingByDefault(because = "The module.xml files are written to per-module paths that are only known "
+    + "at execution time, so the task declares no outputs for Gradle to cache")
 public class NexusIqIndexTask
     extends DefaultTask
 {

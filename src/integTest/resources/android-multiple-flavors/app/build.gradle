@@ -7,15 +7,15 @@
 apply plugin: 'com.android.application'
 
 android {
-  compileSdkVersion rootProject.ext.compileSdkVersion
+  namespace 'com.inventage.sonatype.android.app'
+  compileSdk rootProject.ext.compileSdk
 
   defaultConfig {
     applicationId 'org.sonatype.gradle.plugins.scan.android'
-    minSdkVersion rootProject.ext.minSdkVersion
-    targetSdkVersion rootProject.ext.targetSdkVersion
+    minSdk rootProject.ext.minSdk
+    targetSdk rootProject.ext.targetSdk
     versionCode 1
     versionName '1.0.0'
-    buildToolsVersion rootProject.ext.buildToolsVersion
   }
 
   flavorDimensions 'version'

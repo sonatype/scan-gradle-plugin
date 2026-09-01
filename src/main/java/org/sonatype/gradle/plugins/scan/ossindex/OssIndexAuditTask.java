@@ -43,12 +43,16 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.internal.impldep.com.google.common.annotations.VisibleForTesting;
+import org.gradle.work.DisableCachingByDefault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Gradle task for auditing dependencies using OSS Index.
  */
+@DisableCachingByDefault(because = "Auditing queries a remote vulnerability service whose data changes as new "
+    + "vulnerabilities are published, so the same dependencies can legitimately produce a different result on "
+    + "a later run")
 public class OssIndexAuditTask
     extends DefaultTask
 {

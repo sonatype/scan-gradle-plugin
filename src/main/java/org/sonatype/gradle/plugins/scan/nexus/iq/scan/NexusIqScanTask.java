@@ -41,6 +41,7 @@ import org.gradle.api.GradleException;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.internal.impldep.com.google.common.annotations.VisibleForTesting;
+import org.gradle.work.DisableCachingByDefault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +50,9 @@ import static java.util.Arrays.stream;
 /**
  * Gradle task for scanning and evaluating dependencies against Nexus IQ Server policies.
  */
+@DisableCachingByDefault(because = "Scanning submits the dependency list to a remote Nexus IQ Server, which "
+    + "creates a report and evaluates it against server-side policies that can change independently of this "
+    + "build, so the result is not reproducible from the task inputs")
 public class NexusIqScanTask
     extends DefaultTask
 {

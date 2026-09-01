@@ -89,7 +89,7 @@ enforced by the `com.github.hierynomus.license` plugin using [`header.txt`](../h
   Gradle runtimes. They are wired up in [`gradle/integration-test.gradle`](../gradle/integration-test.gradle).
 
 Integration tests are split by target Gradle version into separate classes (e.g.
-`ScanIT_Gradle_Versions_8_4_to_8_5`, `..._8_6_to_8_10`, `..._8_11_to_8_14`). For parallel CI execution these are
+`ScanIT_Gradle_Versions_8_4_to_8_8`, `..._8_10_to_8_14`). For parallel CI execution these are
 grouped into four tasks, `it1`–`it4`, which the aggregate `integrationTest` task depends on:
 
 ```bash

@@ -6,8 +6,7 @@
     "Sonatype" is a trademark of Sonatype, Inc.
 
 -->
-<manifest package="com.inventage.sonatype.android.app"
-          xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools">
   <application android:name="org.sonatype.gradle.plugins.scan.android" />
 </manifest>
