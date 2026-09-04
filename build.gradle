@@ -105,6 +105,9 @@ dependencies {
     implementation('org.codehaus.plexus:plexus-utils:3.6.2') {
       because('Pinning version to avoid CVE-2025-67030')
     }
+    implementation('org.apache.logging.log4j:log4j-api:2.26.1') {
+      because('Temporarily pinning version to avoid sonatype-2026-006746')
+    }
   }
 
   testImplementation gradleTestKit()
