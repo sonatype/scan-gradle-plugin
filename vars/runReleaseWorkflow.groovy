@@ -10,7 +10,7 @@ def call() {
 
   def workflowRun = gitHubTriggerWorkflow(gitHub, 'ci-release.yml', 'main')
 
-  gitHubPollWorkflowCompletion(gitHub, workflowRun, 600, 30)
+  gitHubPollWorkflowCompletion(gitHub, workflowRun, 1800, 30)
 
   // successful release workflowRun run will have 1 artifact
   gitHubArtifactDownload(gitHub, workflowRun, 1)
