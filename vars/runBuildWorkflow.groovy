@@ -8,11 +8,12 @@
 def call(String branch, boolean runIntegrationTests) {
   def gitHub = getGitHubClient('sonatype/scan-gradle-plugin')
 
-  def inputs = [ runIntegrationTests: runIntegrationTests & branch == 'main' ]
+  boolean runITs = runIntegrationTests & branch == 'main'
+  def inputs = [ runIntegrationTests: runITs ]
   def workflowRun = gitHubTriggerWorkflow(gitHub, 'ci-build.yml', branch, inputs)
 
   gitHubPollWorkflowCompletion(gitHub, workflowRun, 600, 30)
 
   // successful release workflowRun run will have 1 or 5 artifacts
-  gitHubArtifactDownload(gitHub, workflowRun, runIntegrationTests ? 5 : 1)
+  gitHubArtifactDownload(gitHub, workflowRun, runITs ? 5 : 1)
 }
