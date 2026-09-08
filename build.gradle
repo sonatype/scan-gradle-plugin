@@ -184,6 +184,12 @@ publishing {
           developerConnection = 'scm:git:ssh://git@github.com:sonatype/scan-gradle-plugin.git'
           url = 'https://github.com/sonatype/scan-gradle-plugin'
         }
+        developers {
+          developer {
+            name = 'Sonatype, Inc.'
+            organization = 'Sonatype, Inc.'
+          }
+        }
       }
     }
   }
