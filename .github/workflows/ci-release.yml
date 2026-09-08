@@ -38,10 +38,8 @@ jobs:
           rm -rf build/publications/scanPluginMarkerMaven
 
       - name: Publish to Maven Central
-
-        run: ./gradlew jreleaserFullRelease -Dorg.gradle.daemon=false --stacktrace -x test -x integrationTest
+        run: ./gradlew jreleaserFullRelease -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-Xmx4096m --stacktrace -x test -x integrationTest
         env:
-          GRADLE_OPTS: -Xmx4096m
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_GPG_PUBLIC_KEY: ${{ vars.GPG_PUBLIC_KEY }}
           JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_SIGNING_KEY }}
