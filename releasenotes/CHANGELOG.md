@@ -7,6 +7,9 @@
 -->
 # Changelog
 
+## Version 4.1.0 (September 08, 2026)
+* Added support for Gradle 9+
+
 ## Version 4.0.0 (July 29, 2026)
 * Dropped support for Gradle before 8.4 and upgraded to Java 17
 
