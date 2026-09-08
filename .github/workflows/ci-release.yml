@@ -37,7 +37,7 @@ jobs:
           rm -rf build/publications/scanPluginMarkerMaven
 
       - name: Publish to Maven Central
-        run: ./gradlew jreleaserFullRelease -Dorg.gradle.daemon=false --info -x test -x integrationTest
+        run: ./gradlew jreleaserFullRelease -Dorg.gradle.daemon=false --stacktrace -x test -x integrationTest
         env:
           GRADLE_OPTS: -Xmx4096m
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
