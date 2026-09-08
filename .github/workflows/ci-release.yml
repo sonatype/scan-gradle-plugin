@@ -24,7 +24,8 @@ jobs:
           java-version: 17
 
       - name: Build and Publish to Plugin Portal
-        run: ./gradlew clean publish copyDependencies -x integrationTest -Dorg.gradle.daemon=false --info -PisReleaseJob
+#        run: ./gradlew clean publish copyDependencies -x integrationTest -Dorg.gradle.daemon=false --stacktrace -PisReleaseJob
+        run: ./gradlew clean copyDependencies -x integrationTest -Dorg.gradle.daemon=false --stacktrace -PisReleaseJob
         env:
           NEXUS_RM_USERNAME: ${{ secrets.NEXUS_RM_USERNAME }}
           NEXUS_RM_PASSWORD: ${{ secrets.NEXUS_RM_PASSWORD }}
@@ -53,7 +54,6 @@ jobs:
           name: scan-gradle-plugin
           compression-level: 1 # best speed
           path: |
-            build/libs/scan-gradle-plugin-*-SNAPSHOT.jar
-            build/libs/scan-gradle-plugin-*-SNAPSHOT-main.jar
+            build/libs/scan-gradle-plugin-*.jar
             build/dependencies/*.jar
             build/test-results/*/*.xml
