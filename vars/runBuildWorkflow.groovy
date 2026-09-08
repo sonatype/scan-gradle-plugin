@@ -8,7 +8,7 @@
 def call(String branch, boolean runIntegrationTests) {
   def gitHub = getGitHubClient('sonatype/scan-gradle-plugin')
 
-  def inputs = [ runIntegrationTests: runIntegrationTests ]
+  def inputs = [ runIntegrationTests: runIntegrationTests & branch == 'main' ]
   def workflowRun = gitHubTriggerWorkflow(gitHub, 'ci-build.yml', branch, inputs)
 
   gitHubPollWorkflowCompletion(gitHub, workflowRun, 600, 30)
