@@ -51,7 +51,7 @@ pipeline {
           runSafely """
               git add gradle.properties
               git commit -m 'Release: ${params.version}'
-              git tag -a release-${params.version} -m 'Release: ${params.version}'"
+              git tag -a release-${params.version} -m 'Release: ${params.version}'
               git pull --no-rebase --no-edit origin main
               git push --no-verify origin main
           """
