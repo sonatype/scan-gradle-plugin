@@ -25,7 +25,7 @@ jobs:
 
       - name: Build and Publish to Plugin Portal
 #        run: ./gradlew clean publish copyDependencies -x integrationTest -Dorg.gradle.daemon=false --stacktrace -PisReleaseJob
-        run: ./gradlew clean copyDependencies -x integrationTest -Dorg.gradle.daemon=false --stacktrace -PisReleaseJob
+        run: ./gradlew clean publishAllPublicationsToMavenRepository cleanupUnwantedArtifacts copyDependencies -x integrationTest -Dorg.gradle.daemon=false --stacktrace -PisReleaseJob
         env:
           NEXUS_RM_USERNAME: ${{ secrets.NEXUS_RM_USERNAME }}
           NEXUS_RM_PASSWORD: ${{ secrets.NEXUS_RM_PASSWORD }}
@@ -38,6 +38,7 @@ jobs:
           rm -rf build/publications/scanPluginMarkerMaven
 
       - name: Publish to Maven Central
+
         run: ./gradlew jreleaserFullRelease -Dorg.gradle.daemon=false --stacktrace -x test -x integrationTest
         env:
           GRADLE_OPTS: -Xmx4096m
