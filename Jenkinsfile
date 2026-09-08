@@ -45,7 +45,7 @@ pipeline {
     stage('Build and Test') {
       steps {
         runBuildWorkflow(env.BRANCH_NAME, params.runIntegrationTests)
-        collectTestResults(params.runIntegrationTests
+        collectTestResults(params.runIntegrationTests & env.BRANCH_NAME == 'main'
             ? ['target/test-results/test/*.xml', 'target/it*/*.xml']
             : ['target/test-results/test/*.xml'])
       }
