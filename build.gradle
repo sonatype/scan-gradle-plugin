@@ -73,11 +73,11 @@ allprojects {
 }
 
 ext {
-  insightScannerVersion='3.0.58-01'
+  insightScannerVersion='3.0.65-01'
 }
 
 dependencies {
-  implementation 'com.sonatype.insight.brain:insight-brain-client:2.1.16-01'
+  implementation 'com.sonatype.insight.brain:insight-brain-client:2.1.17-01'
   implementation 'com.sonatype.clm:com.sonatype.clm.dto.model:2.1.37-01'
   implementation "com.sonatype.insight.scan:insight-scanner-archive:$insightScannerVersion"
   implementation "com.sonatype.insight.scan:insight-client-utils:$insightScannerVersion"
