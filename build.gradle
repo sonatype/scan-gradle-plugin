@@ -110,6 +110,9 @@ dependencies {
     implementation('org.apache.logging.log4j:log4j-api:2.26.1') {
       because('Temporarily pinning version to avoid sonatype-2026-006746')
     }
+    implementation('com.github.luben:zstd-jni:1.5.7-16') {
+      because('Pinning version to avoid CVE-2026-87795 and CVE-2026-87823 (transitive via insight-scanner-archive)')
+    }
   }
 
   testImplementation gradleTestKit()
