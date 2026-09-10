@@ -2,8 +2,10 @@ plugins {
   id 'net.researchgate.release' version '3.1.0'
   id 'com.gradle.plugin-publish' version '2.1.1'
   id 'org.jreleaser' version '1.26.0'
-  id 'com.gradleup.shadow' version '9.0.0-rc3'
+  id 'com.gradleup.shadow' version '9.6.1'
   id 'com.github.hierynomus.license' version '0.16.1'
+  id 'io.github.ben-manes.versions' version '0.61.0'
+  id 'se.patrikerdes.use-latest-versions' version '0.2.19'
 }
 
 apply from: 'gradle/integration-test.gradle'
@@ -116,9 +118,21 @@ dependencies {
   testImplementation 'org.mockito:mockito-core:5.12.0'
 }
 
+useLatestVersions {
+  updateWhitelist = [
+      'com.sonatype.insight.brain',
+      'com.sonatype.clm',
+      'com.sonatype.insight.scan',
+      'org.sonatype.ossindex'
+  ]
+  versionFiles = [ 'build.gradle' ]
+}
+
+def projectVersion = providers.gradleProperty("version").orNull
+
 processResources {
   filesMatching('com/sonatype/insight/client.properties') {
-    expand(project.properties)
+    expand(version: projectVersion)
   }
 }
 
