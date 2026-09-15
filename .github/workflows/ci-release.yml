@@ -24,7 +24,7 @@ jobs:
           java-version: 17
 
       - name: Build and Publish to Plugin Portal
-        run: ./gradlew clean publish copyDependencies -x integrationTest -Dorg.gradle.daemon=false --stacktrace -PisReleaseJob
+        run: ./gradlew clean publish copyDependencies -x test -x integrationTest -Dorg.gradle.daemon=false --stacktrace -PisReleaseJob
         env:
           NEXUS_RM_USERNAME: ${{ secrets.NEXUS_RM_USERNAME }}
           NEXUS_RM_PASSWORD: ${{ secrets.NEXUS_RM_PASSWORD }}
@@ -47,6 +47,7 @@ jobs:
           JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.JRELEASER_MAVENCENTRAL_PASSWORD }}
 
       - name: Upload artifact
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: scan-gradle-plugin
@@ -54,4 +55,3 @@ jobs:
           path: |
             build/libs/scan-gradle-plugin-*.jar
             build/dependencies/*.jar
-            build/test-results/*/*.xml

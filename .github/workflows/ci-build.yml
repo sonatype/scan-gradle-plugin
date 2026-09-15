@@ -35,6 +35,7 @@ jobs:
           NEXUS_RM_PASSWORD: ${{ secrets.NEXUS_RM_PASSWORD }}
 
       - name: Upload artifact
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: scan-gradle-plugin
@@ -71,6 +72,7 @@ jobs:
           NEXUS_RM_PASSWORD: ${{ secrets.NEXUS_RM_PASSWORD }}
 
       - name: Upload artifact
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.it }}
