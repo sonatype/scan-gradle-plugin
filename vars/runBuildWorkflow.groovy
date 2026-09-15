@@ -12,8 +12,16 @@ def call(String branch, boolean runIntegrationTests) {
   def inputs = [ runIntegrationTests: runITs ]
   def workflowRun = gitHubTriggerWorkflow(gitHub, 'ci-build.yml', branch, inputs)
 
-  gitHubPollWorkflowCompletion(gitHub, workflowRun, 600, 30)
+  def conclusion = gitHubPollWorkflowCompletion(gitHub, workflowRun, 600, 30)
 
-  // successful release workflowRun run will have 1 or 5 artifacts
+  // successful workflowRun run will have 1 or 5 artifacts
   gitHubArtifactDownload(gitHub, workflowRun, runITs ? 5 : 1)
+
+  collectTestResults(runITs
+      ? ['target/test-results/test/*.xml', 'target/it*/*.xml']
+      : ['target/test-results/test/*.xml'])
+
+  if (conclusion != 'success') {
+    error "Workflow run ${workflowRun.id} did not succeed: ${conclusion}"
+  }
 }

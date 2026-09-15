@@ -10,8 +10,12 @@ def call() {
 
   def workflowRun = gitHubTriggerWorkflow(gitHub, 'ci-release.yml', 'main')
 
-  gitHubPollWorkflowCompletion(gitHub, workflowRun, 1800, 30)
+  def conclusion = gitHubPollWorkflowCompletion(gitHub, workflowRun, 1800, 30)
 
   // successful release workflowRun run will have 1 artifact
   gitHubArtifactDownload(gitHub, workflowRun, 1)
+
+  if (conclusion != 'success') {
+    error "Workflow run ${workflowRun.id} did not succeed: ${conclusion}"
+  }
 }
