@@ -73,18 +73,18 @@ allprojects {
 }
 
 ext {
-  insightScannerVersion='3.0.73-01'
+  insightScannerVersion='3.0.74-01'
 }
 
 dependencies {
-  implementation 'com.sonatype.insight.brain:insight-brain-client:2.1.18-01'
-  implementation 'com.sonatype.clm:com.sonatype.clm.dto.model:2.1.39-01'
+  implementation 'com.sonatype.insight.brain:insight-brain-client:2.1.19-01'
+  implementation 'com.sonatype.clm:com.sonatype.clm.dto.model:2.1.41-01'
   implementation "com.sonatype.insight.scan:insight-scanner-archive:$insightScannerVersion"
   implementation "com.sonatype.insight.scan:insight-client-utils:$insightScannerVersion"
   implementation "com.sonatype.insight.scan:insight-scanner-model:$insightScannerVersion"
   implementation "com.sonatype.insight.scan:insight-module-model:$insightScannerVersion"
   implementation 'org.sonatype.ossindex:ossindex-service-client:1.8.2'
-  implementation 'ch.qos.logback:logback-classic:1.6.3'
+  implementation 'ch.qos.logback:logback-classic:1.6.5'
   implementation 'commons-io:commons-io:2.16.1'
 
   // Align all jackson artifacts (transitive via insight-brain-client) on a version without CVE-2026-110879
@@ -121,7 +121,7 @@ dependencies {
   testImplementation gradleTestKit()
   testImplementation 'junit:junit:4.13.2'
   testImplementation 'org.assertj:assertj-core:3.27.7'
-  testImplementation 'org.mockito:mockito-core:5.12.0'
+  testImplementation 'org.mockito:mockito-core:5.24.0'
 }
 
 useLatestVersions {
