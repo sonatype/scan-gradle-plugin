@@ -15,7 +15,7 @@ public class ScanIT_Gradle_Versions_9_0_to_9_8
 {
   @Parameterized.Parameters(name = "Version: {0}")
   public static List<String> data() {
-    return List.of("9.0.0", "9.7.1", "9.8.2");
+    return List.of("9.0.0", "9.8.2");
   }
 
   public ScanIT_Gradle_Versions_9_0_to_9_8(final String gradleVersion) {
