@@ -10,15 +10,15 @@ import java.util.List;
 
 import org.junit.runners.Parameterized;
 
-public class ScanIT_Gradle_Versions_9_0_to_9_7
+public class ScanIT_Gradle_Versions_9_0_to_9_8
     extends ScanPluginIntegrationTestBase
 {
   @Parameterized.Parameters(name = "Version: {0}")
   public static List<String> data() {
-    return List.of("9.0.0", "9.7.1");
+    return List.of("9.0.0", "9.8.2");
   }
 
-  public ScanIT_Gradle_Versions_9_0_to_9_7(final String gradleVersion) {
+  public ScanIT_Gradle_Versions_9_0_to_9_8(final String gradleVersion) {
     super(gradleVersion);
   }
 }

@@ -167,6 +167,8 @@ tasks.shadowJar {
   relocate('org.objectweb.asm', 'org.sonatype.gradle.plugins.scan.shadow.org.objectweb.asm')
   relocate('org.apache.commons', 'org.sonatype.gradle.plugins.scan.shadow.org.apache.commons')
   exclude 'groovyjarjarasm/**'
+  // Only service files need every duplicate, so mergeServiceFiles() can combine them. Other duplicates stay excluded.
+  filesMatching('META-INF/services/**') { duplicatesStrategy = DuplicatesStrategy.INCLUDE }
   mergeServiceFiles()
 }
 
