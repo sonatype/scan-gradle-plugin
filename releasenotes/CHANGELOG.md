@@ -7,6 +7,9 @@
 -->
 # Changelog
 
+## Version 4.1.2 (November 06, 2026)
+* Added support for Gradle 9.8
+
 ## Version 4.1.1 (October 14, 2026)
 * Maintenance release
 
