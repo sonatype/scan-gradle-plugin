@@ -113,6 +113,9 @@ dependencies {
     implementation('org.apache.logging.log4j:log4j-api:2.26.1') {
       because('Temporarily pinning version to avoid sonatype-2026-006746')
     }
+    implementation('com.google.guava:guava:33.8.0-jre') {
+      because('Pinning version to avoid CVE-2026-102554 and CVE-2026-118042 (transitive via jib-core, insight-common-model, ossindex-service-client and others)')
+    }
     implementation('com.github.luben:zstd-jni:1.5.7-25') {
       because('Pinning version to avoid sonatype-2026-010031, sonatype-2026-010032 and sonatype-2026-010033 (transitive via insight-scanner-archive)')
     }
