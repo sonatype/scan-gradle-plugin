@@ -301,11 +301,11 @@ if (project.hasProperty('isReleaseJob')) {
   }
 }
 
-// To evaluate against your local IQ instance run, with your own credentials:
-// ./gradlew nexusIQScan -Pusername=admin -Ppassword=pass
+// To evaluate against your local IQ instance run (update the credentials if needed):
+// ./gradlew nexusIQScan
 nexusIQScan {
-  username = project['username']
-  password = project['password']
+  username = 'admin'
+  password = 'admin123'
   serverUrl = 'http://localhost:8070'
   applicationId = 'scan-gradle-plugin'
   stage = 'build'
