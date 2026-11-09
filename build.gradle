@@ -6,6 +6,7 @@ plugins {
   id 'com.github.hierynomus.license' version '0.16.1'
   id 'io.github.ben-manes.versions' version '0.61.0'
   id 'se.patrikerdes.use-latest-versions' version '0.2.19'
+  id 'org.sonatype.gradle.plugins.scan' version '4.1.2-01' // update to the latest version for testing
 }
 
 apply from: 'gradle/integration-test.gradle'
@@ -298,4 +299,14 @@ if (project.hasProperty('isReleaseJob')) {
       }
     }
   }
+}
+
+// To evaluate against your local IQ instance run, with your own credentials:
+// ./gradlew nexusIQScan -Pusername=admin -Ppassword=pass
+nexusIQScan {
+  username = project['username']
+  password = project['password']
+  serverUrl = 'http://localhost:8070'
+  applicationId = 'scan-gradle-plugin'
+  stage = 'build'
 }
