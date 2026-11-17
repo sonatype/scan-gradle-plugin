@@ -223,7 +223,9 @@ public class NexusIqScanTask
     }
 
     if (PolicyAction.FAIL == policyAction) {
-      throw new GradleException("Sonatype IQ Server policy evaluation failed. See the evaluation results above.");
+      String reportUrl = evaluation.getApplicationCompositionReportUrl();
+      throw new GradleException("Sonatype IQ Server policy evaluation failed. See the evaluation results above."
+          + (StringUtils.isBlank(reportUrl) ? "" : " Report: " + EvaluationResultsFormatter.clean(reportUrl)));
     }
   }
 

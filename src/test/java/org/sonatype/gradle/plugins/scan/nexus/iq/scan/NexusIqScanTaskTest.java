@@ -27,6 +27,7 @@ import org.sonatype.gradle.plugins.scan.common.DependenciesFinder;
 
 import com.google.common.collect.Sets;
 import org.gradle.api.GradleException;
+import org.gradle.api.logging.configuration.ConsoleOutput;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.Before;
@@ -265,7 +266,8 @@ public class NexusIqScanTaskTest
     NexusIqScanTask task = buildSimulatedTask("fail", logger);
 
     assertThatThrownBy(task::scan).isInstanceOf(GradleException.class)
-        .hasMessage("Sonatype IQ Server policy evaluation failed. See the evaluation results above.");
+        .hasMessage("Sonatype IQ Server policy evaluation failed. See the evaluation results above. "
+            + "Report: simulated/report");
 
     assertThat(logged(logger, "error")).contains("Policy action: failure");
     verify(logger, never()).lifecycle(anyString());
@@ -302,6 +304,30 @@ public class NexusIqScanTaskTest
     task.scan();
 
     assertThat(logged(logger, "lifecycle")).doesNotContain("\u001B");
+  }
+
+  @Test
+  public void testReport_colorsOnlyWithRichConsoleAndColorEnabled() {
+    assertThat(coloredReport(ConsoleOutput.Rich, true)).contains("\u001B[");
+    assertThat(coloredReport(ConsoleOutput.Verbose, true)).contains("\u001B[");
+    assertThat(coloredReport(ConsoleOutput.Rich, false)).doesNotContain("\u001B");
+    assertThat(coloredReport(ConsoleOutput.Auto, true)).doesNotContain("\u001B");
+    assertThat(coloredReport(ConsoleOutput.Plain, true)).doesNotContain("\u001B");
+  }
+
+  private String coloredReport(ConsoleOutput console, boolean colorEnabled) {
+    org.gradle.api.logging.Logger logger = mock(org.gradle.api.logging.Logger.class);
+    NexusIqScanTask task = buildScanTask(true, null, "", "", "", extension -> {
+      extension.setSimulatedPolicyActionId("none");
+      extension.setColorEnabled(colorEnabled);
+    });
+    task.getProject().getGradle().getStartParameter().setConsoleOutput(console);
+    task.setDependenciesFinder(dependenciesFinderMock);
+    task.setReportLogger(logger);
+
+    task.scan();
+
+    return logged(logger, "lifecycle");
   }
 
   private NexusIqScanTask buildSimulatedTask(String policyActionId, org.gradle.api.logging.Logger logger) {

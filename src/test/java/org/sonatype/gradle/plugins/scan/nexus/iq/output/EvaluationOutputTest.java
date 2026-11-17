@@ -99,6 +99,14 @@ public class EvaluationOutputTest
   }
 
   @Test
+  public void testClean_replacesAllControlCharacters() {
+    String dirty = "a\u0007b\bc\td\u009Be\u001Bf\rg\nh\u007Fi";
+    assertThat(EvaluationResultsFormatter.clean(dirty)).isEqualTo("a b c d e f g h i");
+    assertThat(EvaluationResultsFormatter.clean("plain text (7.5)")).isEqualTo("plain text (7.5)");
+    assertThat(EvaluationResultsFormatter.clean(null)).isEmpty();
+  }
+
+  @Test
   public void testResults_componentWithoutDisplayNameFallsBackToHash() {
     ComponentFact lib = new ComponentFact(null, "hash123", singletonList(constraint("c", severity("CVE-1", "5.0"))),
         List.of(), null);

@@ -37,6 +37,8 @@ public final class EvaluationResultsFormatter
   private static final Pattern SECURITY_VULNERABILITY_SEVERITY_PATTERN =
       Pattern.compile("Found security vulnerability (\\S+) with severity [^(]+ \\(severity = ([\\d.]+)\\)");
 
+  private static final Pattern CONTROL_CHARACTERS = Pattern.compile("[\\p{Cntrl}\\u0080-\\u009F]");
+
   private static final List<String> NAME_LABELS = List.of("Artifact", "ID", "Name");
 
   private EvaluationResultsFormatter() {
@@ -220,10 +222,11 @@ public final class EvaluationResultsFormatter
   }
 
   /**
-   * Values come from the server and from scanned artifacts; keep them on one line and free of escape characters
-   * so they cannot forge log lines.
+   * Values come from the server and from scanned artifacts; keep them on one line and free of control characters
+   * (including ESC and the C1 range, which some terminals treat as escape introducers) so they cannot forge log
+   * lines or inject terminal commands.
    */
-  static String clean(final String value) {
-    return value == null ? "" : value.replaceAll("[\\r\\n\\u001B]", " ");
+  public static String clean(final String value) {
+    return value == null ? "" : CONTROL_CHARACTERS.matcher(value).replaceAll(" ");
   }
 }
