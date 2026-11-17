@@ -259,6 +259,76 @@ public class NexusIqScanTaskTest
     return buildScanTask(isSimulated, null);
   }
 
+  @Test
+  public void testReport_failIsLoggedAsErrorAndFailsWithShortMessage() {
+    org.gradle.api.logging.Logger logger = mock(org.gradle.api.logging.Logger.class);
+    NexusIqScanTask task = buildSimulatedTask("fail", logger);
+
+    assertThatThrownBy(task::scan).isInstanceOf(GradleException.class)
+        .hasMessage("Sonatype IQ Server policy evaluation failed. See the evaluation results above.");
+
+    assertThat(logged(logger, "error")).contains("Policy action: failure");
+    verify(logger, never()).lifecycle(anyString());
+    verify(logger, never()).warn(anyString());
+  }
+
+  @Test
+  public void testReport_warnIsLoggedAsWarning() {
+    org.gradle.api.logging.Logger logger = mock(org.gradle.api.logging.Logger.class);
+
+    buildSimulatedTask("warn", logger).scan();
+
+    assertThat(logged(logger, "warn")).contains("Policy action: warning");
+    verify(logger, never()).lifecycle(anyString());
+    verify(logger, never()).error(anyString());
+  }
+
+  @Test
+  public void testReport_noneIsLoggedAtLifecycleLevel() {
+    org.gradle.api.logging.Logger logger = mock(org.gradle.api.logging.Logger.class);
+
+    buildSimulatedTask("none", logger).scan();
+
+    assertThat(logged(logger, "lifecycle")).contains("Policy action: none");
+    verify(logger, never()).warn(anyString());
+    verify(logger, never()).error(anyString());
+  }
+
+  @Test
+  public void testReport_colorsOffWhenOptedOut() {
+    org.gradle.api.logging.Logger logger = mock(org.gradle.api.logging.Logger.class);
+    NexusIqScanTask task = buildSimulatedTask("none", logger);
+
+    task.scan();
+
+    assertThat(logged(logger, "lifecycle")).doesNotContain("\u001B");
+  }
+
+  private NexusIqScanTask buildSimulatedTask(String policyActionId, org.gradle.api.logging.Logger logger) {
+    NexusIqScanTask task = buildScanTask(true, null, "", "", "", extension -> {
+      extension.setSimulatedPolicyActionId(policyActionId);
+      extension.setColorEnabled(false);
+    });
+    task.setDependenciesFinder(dependenciesFinderMock);
+    task.setReportLogger(logger);
+    return task;
+  }
+
+  private static String logged(org.gradle.api.logging.Logger logger, String level) {
+    ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+    switch (level) {
+      case "error":
+        verify(logger, org.mockito.Mockito.atLeastOnce()).error(captor.capture());
+        break;
+      case "warn":
+        verify(logger, org.mockito.Mockito.atLeastOnce()).warn(captor.capture());
+        break;
+      default:
+        verify(logger, org.mockito.Mockito.atLeastOnce()).lifecycle(captor.capture());
+    }
+    return String.join("\n", captor.getAllValues());
+  }
+
   private NexusIqScanTask buildScanTask(boolean isSimulated, String resultFilePath) {
     return buildScanTask(isSimulated, resultFilePath, "", "", "", null);
   }

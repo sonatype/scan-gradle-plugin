@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,6 +31,10 @@ import org.sonatype.gradle.plugins.scan.nexus.iq.client.common.Authentication;
 import org.sonatype.gradle.plugins.scan.nexus.iq.client.common.ServerConfig;
 import org.sonatype.gradle.plugins.scan.nexus.iq.client.impl.PolicyActionResolver;
 import org.sonatype.gradle.plugins.scan.nexus.iq.client.scan.ScanResult;
+import org.sonatype.gradle.plugins.scan.nexus.iq.output.ColorSupport;
+import org.sonatype.gradle.plugins.scan.nexus.iq.output.ConsoleStyle;
+import org.sonatype.gradle.plugins.scan.nexus.iq.output.EvaluationResultsFormatter;
+import org.sonatype.gradle.plugins.scan.nexus.iq.output.EvaluationSummaryFormatter;
 
 import org.sonatype.gradle.plugins.scan.common.DependenciesFinder;
 import org.sonatype.gradle.plugins.scan.common.PluginVersionUtils;
@@ -66,6 +71,8 @@ public class NexusIqScanTask
 
   private DependenciesFinder dependenciesFinder;
 
+  private org.gradle.api.logging.Logger reportLogger;
+
   /**
    * Constructs a new NexusIqScanTask.
    */
@@ -79,9 +86,8 @@ public class NexusIqScanTask
    */
   @TaskAction
   public void scan() {
+    final ApplicationPolicyEvaluation applicationPolicyEvaluation;
     try {
-      final ApplicationPolicyEvaluation applicationPolicyEvaluation;
-
       if (extension.isSimulationEnabled()) {
         log.info("Simulating scan...");
 
@@ -127,11 +133,6 @@ public class NexusIqScanTask
         applicationPolicyEvaluation = iqClient.evaluateApplication(
                 extension.getApplicationId(), extension.getStage(), scanResult, scanFolder, jsonResultsFile);
       }
-
-      PolicyActionResolver resolver = new PolicyActionResolver();
-      PolicyAction policyAction = resolver.resolve(applicationPolicyEvaluation.getPolicyAlerts());
-
-      logReport(policyAction, applicationPolicyEvaluation);
     }
     catch (IqClientException e) {
       String reason = "Could not scan the project: " + e.getMessage();
@@ -144,6 +145,9 @@ public class NexusIqScanTask
     catch (Exception e) {
       throw new GradleException("Could not scan the project: " + e.getMessage(), e);
     }
+
+    PolicyAction policyAction = new PolicyActionResolver().resolve(applicationPolicyEvaluation.getPolicyAlerts());
+    logReport(policyAction, applicationPolicyEvaluation);
   }
 
   private void verifyOrCreateApplication(IqClient iqClient) throws IqClientException {
@@ -192,39 +196,50 @@ public class NexusIqScanTask
     return Collections.emptyList();
   }
 
-  private void logReport(PolicyAction policyAction, ApplicationPolicyEvaluation applicationPolicyEvaluation) {
-    StringBuilder message = new StringBuilder();
-    for (PolicyAlert alert : applicationPolicyEvaluation.getPolicyAlerts()) {
-      PolicyFact trigger = alert.getTrigger();
-      for (Action action : alert.getActions()) {
-        String actionTypeId = action.getActionTypeId();
-        if (Action.ID_FAIL.equals(actionTypeId)) {
-          message.append("Sonatype IQ Server reports policy failing due to ").append(trigger).append("\n");
-        }
-        else if (Action.ID_WARN.equals(actionTypeId)) {
-          message.append("Sonatype IQ Server reports policy warning due to ").append(trigger).append("\n");
-        }
+  private void logReport(PolicyAction policyAction, ApplicationPolicyEvaluation evaluation) {
+    // the level decides where the report shows: error and warn survive --quiet, lifecycle is the default level
+    Consumer<String> out = line -> {
+      switch (policyAction) {
+        case FAIL:
+          reportLogger().error(line);
+          break;
+        case WARN:
+          reportLogger().warn(line);
+          break;
+        default:
+          reportLogger().lifecycle(line);
       }
+    };
+    // printing the report must never change the outcome of the build
+    try {
+      ConsoleStyle style = ConsoleStyle.detect(isColorSupported());
+      boolean resultsPrinted = EvaluationResultsFormatter.print(out, style, evaluation);
+      EvaluationSummaryFormatter.print(out, style, evaluation, describe(policyAction), extension.getStage(),
+          resultsPrinted);
     }
-
-    String reportUrl = applicationPolicyEvaluation.getApplicationCompositionReportUrl();
-    message.append(String.format("Policy Action: %s\n", policyAction));
-    message.append(String.format("Number of components affected: %s critical, %s severe, %s moderate\n",
-        applicationPolicyEvaluation.getCriticalComponentCount(), applicationPolicyEvaluation.getSevereComponentCount(),
-        applicationPolicyEvaluation.getModerateComponentCount()));
-    message.append(String.format("Number of legacy violations: %s\n",
-        applicationPolicyEvaluation.getLegacyViolationCount()));
-    message.append(String.format("Number of components: %s\n", applicationPolicyEvaluation.getTotalComponentCount()));
-    message.append("The detailed report can be viewed online at ").append(reportUrl).append("\n");
+    catch (RuntimeException e) {
+      reportLogger().warn("Could not print the IQ evaluation report: {}", e.toString());
+      reportLogger().debug("Could not print the IQ evaluation report", e);
+    }
 
     if (PolicyAction.FAIL == policyAction) {
-      throw new GradleException(message.toString());
+      throw new GradleException("Sonatype IQ Server policy evaluation failed. See the evaluation results above.");
     }
-    else if (PolicyAction.WARN == policyAction) {
-      log.warn(message.toString());
-    }
-    else {
-      log.info(message.toString());
+  }
+
+  private boolean isColorSupported() {
+    return extension.isColorEnabled()
+        && ColorSupport.isSupported(getProject().getGradle().getStartParameter().getConsoleOutput(), System.getenv());
+  }
+
+  private static String describe(PolicyAction policyAction) {
+    switch (policyAction) {
+      case FAIL:
+        return "failure";
+      case WARN:
+        return "warning";
+      default:
+        return "none";
     }
   }
 
@@ -324,6 +339,15 @@ public class NexusIqScanTask
   @Input
   public String getDirExcludes() {
     return extension.getDirExcludes();
+  }
+
+  private org.gradle.api.logging.Logger reportLogger() {
+    return reportLogger != null ? reportLogger : getLogger();
+  }
+
+  @VisibleForTesting
+  void setReportLogger(org.gradle.api.logging.Logger reportLogger) {
+    this.reportLogger = reportLogger;
   }
 
   @VisibleForTesting

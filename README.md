@@ -217,6 +217,7 @@ nexusIQScan {
     variantAttributes = ['com.android.build.api.attributes.ProductFlavor:version': 'prod', 'other.attribute': 'other value'] // Optional, use it only when the plugin can't match a variant on its own
     scanTargets = ['package-lock.json', '**/*.lock'] // Optional. Ant-like glob patterns for relative paths (to the project's folder) to select additional files to be scanned and evaluated.
     excludeCompileOnly = true // if true then dependencies under the 'compileOnly' configuration will be ignored. By default is false.
+    colorEnabled = false // Optional. Set to false to never print colors in the evaluation output. By default is true, but colors are only used with a rich console: run Gradle with --console=rich (or set org.gradle.console=rich in gradle.properties). Nothing is colored with --console=auto/plain or when NO_COLOR is set.
 }
 ```
 
@@ -239,6 +240,7 @@ nexusIQScan {
     variantAttributes = mapOf("com.android.build.api.attributes.ProductFlavor:version" to "prod", "other.attribute" to "other value") // Optional, use it only when the plugin can't match a variant on its own
     scanTargets = listOf("package-lock.json", "**/*.lock") // Optional. Ant-like glob patterns for relative paths (to the project's folder) to select additional files to be scanned and evaluated.
     excludeCompileOnly = true // if true then dependencies under the 'compileOnly' configuration will be ignored. By default is false.
+    isColorEnabled = false // Optional. Set to false to never print colors in the evaluation output. By default is true, but colors are only used with a rich console: run Gradle with --console=rich (or set org.gradle.console=rich in gradle.properties). Nothing is colored with --console=auto/plain or when NO_COLOR is set.
 }
 ```
 

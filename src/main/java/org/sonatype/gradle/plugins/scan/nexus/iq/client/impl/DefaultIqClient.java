@@ -27,6 +27,7 @@ import org.sonatype.gradle.plugins.scan.nexus.iq.api.ProprietaryConfig;
 import org.sonatype.gradle.plugins.scan.nexus.iq.client.IqClient;
 import org.sonatype.gradle.plugins.scan.nexus.iq.client.IqClientException;
 import org.sonatype.gradle.plugins.scan.nexus.iq.client.scan.ScanResult;
+import org.sonatype.gradle.plugins.scan.nexus.iq.output.ConsoleStyle;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpResponseException;
@@ -142,7 +143,10 @@ public class DefaultIqClient
       final Set<String> licensedFeatures,
       final List<Module> modules) throws IqClientException
   {
-    log.ifPresent(logger -> logger.info("{} Scanning application {}.", getFormattedCurrentDateTime(), applicationId));
+    log.ifPresent(logger -> {
+      ConsoleStyle.detect(false).printHeader(line -> logger.info(line), "Scanning", false);
+      logger.info("{} Scanning application {}.", getFormattedCurrentDateTime(), applicationId);
+    });
     try {
       Properties scanConfig = proprietaryConfig.toProperties();
       scanConfig.putAll(properties);
@@ -181,8 +185,11 @@ public class DefaultIqClient
     ClientScanResult clientScanResult =
         new ClientScanResult(scanResult.getScanFile(), scan.hasThirdPartyScanContent());
 
-    log.ifPresent(logger -> logger.info("{} Evaluating application {} for stage {}.",
-        getFormattedCurrentDateTime(), applicationId, stageId));
+    log.ifPresent(logger -> {
+      ConsoleStyle.detect(false).printHeader(line -> logger.info(line), "Policy Evaluation", false);
+      logger.info("{} Evaluating application {} for stage {}.",
+          getFormattedCurrentDateTime(), applicationId, stageId);
+    });
     try {
       return policyEvaluator
           .evaluateApplication(clientScanResult, applicationId, ClientScanType.SONATYPE,

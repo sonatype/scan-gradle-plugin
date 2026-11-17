@@ -59,6 +59,8 @@ public class NexusIqPluginScanExtension
 
   private boolean excludeCompileOnly;
 
+  private boolean colorEnabled;
+
   /**
    * Constructs a new extension instance with defaults.
    */
@@ -73,6 +75,7 @@ public class NexusIqPluginScanExtension
     dirExcludes = "";
     variantAttributes = Collections.emptyMap();
     scanTargets = Collections.emptySet();
+    colorEnabled = true;
   }
 
   /**
@@ -312,5 +315,19 @@ public class NexusIqPluginScanExtension
    */
   public void setExcludeCompileOnly(boolean excludeCompileOnly) {
     this.excludeCompileOnly = excludeCompileOnly;
+  }
+
+  /**
+   * Returns whether colored console output is allowed. Colors are only used when the Gradle console supports them.
+   */
+  public boolean isColorEnabled() {
+    return colorEnabled;
+  }
+
+  /**
+   * Sets whether colored console output is allowed.
+   */
+  public void setColorEnabled(boolean colorEnabled) {
+    this.colorEnabled = colorEnabled;
   }
 }
