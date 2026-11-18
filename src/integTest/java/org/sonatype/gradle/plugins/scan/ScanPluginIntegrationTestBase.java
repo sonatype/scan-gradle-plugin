@@ -97,7 +97,7 @@ public abstract class ScanPluginIntegrationTestBase
         .withArguments("nexusIQScan", "--info")
         .build();
 
-    assertBuildOutputText_NexusIQ(result, "None");
+    assertBuildOutputText_NexusIQ(result, "none");
 
     assertThat(result.task(":nexusIQScan").getOutcome()).isEqualTo(SUCCESS);
   }
@@ -113,7 +113,7 @@ public abstract class ScanPluginIntegrationTestBase
         .withArguments("nexusIQScan", "--info")
         .build();
 
-    assertBuildOutputText_NexusIQ(result, "Warn");
+    assertBuildOutputText_NexusIQ(result, "warning");
 
     assertThat(result.task(":nexusIQScan").getOutcome()).isEqualTo(SUCCESS);
   }
@@ -129,7 +129,7 @@ public abstract class ScanPluginIntegrationTestBase
         .withArguments("nexusIQScan", "--info")
         .buildAndFail();
 
-    assertBuildOutputText_NexusIQ(result, "Failure");
+    assertBuildOutputText_NexusIQ(result, "failure");
     assertThat(result.task(":nexusIQScan").getOutcome()).isEqualTo(FAILED);
   }
 
@@ -144,7 +144,7 @@ public abstract class ScanPluginIntegrationTestBase
         .withArguments("nexusIQScan", "--info")
         .build();
 
-    assertBuildOutputText_NexusIQ(result, "None");
+    assertBuildOutputText_NexusIQ(result, "none");
     assertThat(result.task(":nexusIQScan").getOutcome()).isEqualTo(SUCCESS);
   }
 
@@ -159,7 +159,7 @@ public abstract class ScanPluginIntegrationTestBase
         .withArguments("nexusIQScan", "--info")
         .build();
 
-    assertBuildOutputText_NexusIQ(result, "None");
+    assertBuildOutputText_NexusIQ(result, "none");
     assertThat(result.task(":nexusIQScan").getOutcome()).isEqualTo(SUCCESS);
   }
 
@@ -535,12 +535,12 @@ public abstract class ScanPluginIntegrationTestBase
   }
 
   private void assertBuildOutputText_NexusIQ(BuildResult result, String policyAction) {
-    final String resultOutput = result.getOutput();
-    assertThat(resultOutput).contains("Policy Action: " + policyAction);
-    assertThat(resultOutput).contains("Number of components affected: 0 critical, 0 severe, 0 moderate");
-    assertThat(resultOutput).contains("Number of legacy violations: 0");
-    assertThat(resultOutput).contains("The detailed report can be viewed online at simulated/report");
-    assertThat(resultOutput).contains("Number of components: 1");
+    // colors depend on the environment of the machine running the tests, so compare the text without them
+    final String resultOutput = result.getOutput().replaceAll("\u001B\\[[0-9;]*m", "");
+    assertThat(resultOutput).contains("Policy action: " + policyAction);
+    assertThat(resultOutput).contains("Components affected: 0 critical, 0 severe, 0 moderate - total components: 1");
+    assertThat(resultOutput).contains("legacy violations: 0");
+    assertThat(resultOutput).contains("Application report: simulated/report");
   }
 
   /*

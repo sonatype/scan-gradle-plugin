@@ -27,6 +27,7 @@ import org.sonatype.gradle.plugins.scan.common.DependenciesFinder;
 
 import com.google.common.collect.Sets;
 import org.gradle.api.GradleException;
+import org.gradle.api.logging.configuration.ConsoleOutput;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.Before;
@@ -257,6 +258,101 @@ public class NexusIqScanTaskTest
 
   private NexusIqScanTask buildScanTask(boolean isSimulated) {
     return buildScanTask(isSimulated, null);
+  }
+
+  @Test
+  public void testReport_failIsLoggedAsErrorAndFailsWithShortMessage() {
+    org.gradle.api.logging.Logger logger = mock(org.gradle.api.logging.Logger.class);
+    NexusIqScanTask task = buildSimulatedTask("fail", logger);
+
+    assertThatThrownBy(task::scan).isInstanceOf(GradleException.class)
+        .hasMessage("Sonatype IQ Server policy evaluation failed. See the evaluation results above. "
+            + "Report: simulated/report");
+
+    assertThat(logged(logger, "error")).contains("Policy action: failure");
+    verify(logger, never()).lifecycle(anyString());
+    verify(logger, never()).warn(anyString());
+  }
+
+  @Test
+  public void testReport_warnIsLoggedAsWarning() {
+    org.gradle.api.logging.Logger logger = mock(org.gradle.api.logging.Logger.class);
+
+    buildSimulatedTask("warn", logger).scan();
+
+    assertThat(logged(logger, "warn")).contains("Policy action: warning");
+    verify(logger, never()).lifecycle(anyString());
+    verify(logger, never()).error(anyString());
+  }
+
+  @Test
+  public void testReport_noneIsLoggedAtLifecycleLevel() {
+    org.gradle.api.logging.Logger logger = mock(org.gradle.api.logging.Logger.class);
+
+    buildSimulatedTask("none", logger).scan();
+
+    assertThat(logged(logger, "lifecycle")).contains("Policy action: none");
+    verify(logger, never()).warn(anyString());
+    verify(logger, never()).error(anyString());
+  }
+
+  @Test
+  public void testReport_colorsOffWhenOptedOut() {
+    org.gradle.api.logging.Logger logger = mock(org.gradle.api.logging.Logger.class);
+    NexusIqScanTask task = buildSimulatedTask("none", logger);
+
+    task.scan();
+
+    assertThat(logged(logger, "lifecycle")).doesNotContain("\u001B");
+  }
+
+  @Test
+  public void testReport_colorsOnlyWithRichConsoleAndColorEnabled() {
+    assertThat(coloredReport(ConsoleOutput.Rich, true)).contains("\u001B[");
+    assertThat(coloredReport(ConsoleOutput.Verbose, true)).contains("\u001B[");
+    assertThat(coloredReport(ConsoleOutput.Rich, false)).doesNotContain("\u001B");
+    assertThat(coloredReport(ConsoleOutput.Auto, true)).doesNotContain("\u001B");
+    assertThat(coloredReport(ConsoleOutput.Plain, true)).doesNotContain("\u001B");
+  }
+
+  private String coloredReport(ConsoleOutput console, boolean colorEnabled) {
+    org.gradle.api.logging.Logger logger = mock(org.gradle.api.logging.Logger.class);
+    NexusIqScanTask task = buildScanTask(true, null, "", "", "", extension -> {
+      extension.setSimulatedPolicyActionId("none");
+      extension.setColorEnabled(colorEnabled);
+    });
+    task.getProject().getGradle().getStartParameter().setConsoleOutput(console);
+    task.setDependenciesFinder(dependenciesFinderMock);
+    task.setReportLogger(logger);
+
+    task.scan();
+
+    return logged(logger, "lifecycle");
+  }
+
+  private NexusIqScanTask buildSimulatedTask(String policyActionId, org.gradle.api.logging.Logger logger) {
+    NexusIqScanTask task = buildScanTask(true, null, "", "", "", extension -> {
+      extension.setSimulatedPolicyActionId(policyActionId);
+      extension.setColorEnabled(false);
+    });
+    task.setDependenciesFinder(dependenciesFinderMock);
+    task.setReportLogger(logger);
+    return task;
+  }
+
+  private static String logged(org.gradle.api.logging.Logger logger, String level) {
+    ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+    switch (level) {
+      case "error":
+        verify(logger, org.mockito.Mockito.atLeastOnce()).error(captor.capture());
+        break;
+      case "warn":
+        verify(logger, org.mockito.Mockito.atLeastOnce()).warn(captor.capture());
+        break;
+      default:
+        verify(logger, org.mockito.Mockito.atLeastOnce()).lifecycle(captor.capture());
+    }
+    return String.join("\n", captor.getAllValues());
   }
 
   private NexusIqScanTask buildScanTask(boolean isSimulated, String resultFilePath) {
